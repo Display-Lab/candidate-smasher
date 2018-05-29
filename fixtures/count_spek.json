@@ -1,0 +1,140 @@
+{
+  "@id": "https://inference.es/app/onto#IPLARC_SPEK",
+  "@type": "http://purl.obolibrary.org/obo/fio#SPEK",
+  "http://purl.obolibrary.org/obo/fio#HasPerformer": [
+    {
+      "@id": "https://inference.es/app/onto#Alice",
+      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001"
+    },
+    {
+      "@id": "https://inference.es/app/onto#Carol",
+      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#CapabilityBarrier"
+        }
+      ]
+    },
+    {
+      "@id": "https://inference.es/app/onto#Dan",
+      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#PromotionFocus"
+        },
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#CapbilityBarrier"
+        }
+      ]
+    },
+    {
+      "@id": "https://inference.es/app/onto#Elaine",
+      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#PreventionFocus"
+        },
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#CapbilityBarrier"
+        }
+      ]
+    },
+    {
+      "@id": "https://inference.es/app/onto#Frank",
+      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001"
+    }
+  ],
+  "https://purl.obolibrary.org/need/definiton#RELATED_LOCATION": [
+    {
+      "@type": "http://schema.org/Organization",
+      "http://schema.org/address": [
+        {
+          "@type": "http://schema.org/PostalAddress",
+          "http://schema.org/addressCountry": [
+            {
+              "@value": "United States"
+            }
+          ],
+          "http://schema.org/addressLocality": [
+            {
+              "@value": "Ann Arbor"
+            }
+          ],
+          "http://schema.org/addressRegion": [
+            {
+              "@value": "Michigan"
+            }
+          ],
+          "http://schema.org/name": [
+            {
+              "@value": "IPLARC-Clinic"
+            }
+          ],
+          "http://schema.org/postalCode": [
+            {
+              "@value": "48109"
+            }
+          ],
+          "http://schema.org/streetAddress": [
+            {
+              "@value": "903 South Univeristy"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "http://purl.obolibrary.org/obo/fio#UsesISR": [
+    {
+      "@id": "https://inference.es/app/onto#ISRnamedDuq",
+      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+    },
+    {
+      "@id": "https://inference.es/app/onto#ISRnamedBar",
+      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+    },
+    {
+      "@id": "https://inference.es/app/onto#ISRnamedFoo",
+      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+    }
+  ],
+  "http://purl.obolibrary.org/obo/fio#UsesTemplate": [
+    {
+      "@id": "https://inference.es/app/onto#templateNamedBaz",
+      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#NormativeComparator"
+        }
+      ]
+    },
+    {
+      "@id": "https://inference.es/app/onto#templateNamedMab",
+      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#PromotionFraming"
+        }
+      ]
+    },
+    {
+      "@id": "https://inference.es/app/onto#templateNamedMuq",
+      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
+      "http://purl.obolibrary.org/obo/fio#PerformerCardinality": [
+        {
+          "@value": 3
+        }
+      ],
+      "http://purl.obolibrary.org/obo/fio#TimeCardinality": [
+        {
+          "@value": 3
+        }
+      ],
+      "http://purl.obolibrary.org/obo/RO_0000091": [
+        {
+          "@value": "http://purl.obolibrary.org/obo/fio#PreventionFraming"
+        }
+      ]
+    }
+  ]
+}
