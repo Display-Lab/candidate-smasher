@@ -14,10 +14,6 @@ class CanSmashCLI < Thor
     path ||= options[:path]
     md_source = options[:md_source]
 
-    # Debugging
-    puts path if path
-    puts md_source if md_source
-
     begin
       input = resolve_input path
       content = input.read
@@ -33,7 +29,7 @@ class CanSmashCLI < Thor
 
   def resolve_input(path)
     if(path.nil?)
-      input_method = STDIN
+      input_method = $stdin
     elsif(File.exists?(path) && File.readable?(path))
       input_method = File.open(path, mode="r") 
     else
