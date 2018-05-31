@@ -8,7 +8,7 @@ class CandidateSmasher
   USES_ISR_IRI = "http://purl.obolibrary.org/obo/fio#UsesISR"
   ANCESTOR_PERFORMER_IRI = "http://purl.obolibrary.org/obo/fio#AncestorPerformer"
   ANCESTOR_TEMPLATE_IRI = "http://purl.obolibrary.org/obo/fio#AncestorTemplate"
-  CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#AncestorTemplate"
+  CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#Candidate"
   HAS_CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#hasCandidate"
 
   attr_accessor :spek_hsh

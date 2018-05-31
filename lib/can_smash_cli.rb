@@ -22,7 +22,13 @@ class CanSmashCLI < Thor
       exit(1)
     end
 
-    candi = CandidateSmasher.new content
+    cs = CandidateSmasher.new content
+    if cs.valid?
+      puts cs.smash!
+    else
+      STDERR.puts("Invalid input")
+      exit(1)
+    end
   end
 
   private
