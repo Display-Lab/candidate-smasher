@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1300855.svg)](https://doi.org/10.5281/zenodo.1300855)
+
 # Candidate Smasher
 Make artificial constructs, performance feedback display candidates, by smashing together the attributes from a performance feedback template and a feedback recipient.
 
