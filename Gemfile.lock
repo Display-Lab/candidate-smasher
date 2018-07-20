@@ -39,6 +39,7 @@ PLATFORMS
 DEPENDENCIES
   json-ld
   pry
+  rdf
   rspec
   thor
 
