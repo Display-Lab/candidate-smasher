@@ -1,3 +1,4 @@
+require "rdf"
 require "json/ld"
 require "digest"
 
@@ -11,13 +12,19 @@ class CandidateSmasher
   CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#Candidate"
   HAS_CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#hasCandidate"
 
-  attr_accessor :spek_hsh
+  attr_accessor :spek_hsh, :template_lib
   
-  def initialize(input_string="{}")
+  def initialize(input_string="{}", templates_md=nil)
     begin
       @spek_hsh = JSON.parse input_string
     rescue JSON::ParserError
       @spek_hsh = Hash.new
+    end
+
+    if template_lib.nil?
+      @template_lib = RDF::Graph.new
+    else
+      @template_lib = RDF::Graph.load(templates_md)
     end
   end
 
@@ -30,8 +37,8 @@ class CandidateSmasher
   end
 
   def generate_candidates
-    performers = @spek_hsh[HAS_PERFORMER_IRI]
-    templates = @spek_hsh[USES_TEMPLATE_IRI]
+    performers = @spek_hsh[HAS_PERFORMER_IRI] || Array.new
+    templates = @spek_hsh[USES_TEMPLATE_IRI] || Array.new
 
     res = performers.collect do |p|
       templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
