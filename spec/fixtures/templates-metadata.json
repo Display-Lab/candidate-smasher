@@ -1,4 +1,12 @@
 {
+  "@context":{
+    "@vocab": "http://schema.org/",
+    "has_disposition": "http://purl.obolibrary.org/obo/RO_0000091",
+    "performer_cardinality": "http://example.com/ns#performer_cardinality",
+    "time_cardinality": "http://example.com/ns#time_cardinality",
+    "name": "http://example.com/ns#name",
+    "uses_intervention_property": "http://example.com/ns#uses_intervention_property"
+  },
   "@graph":[
     {
       "@id": "https://inferences.es/app/onto#TPLT001",
