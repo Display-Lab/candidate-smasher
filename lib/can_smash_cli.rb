@@ -26,8 +26,7 @@ class CanSmashCLI < Thor
     if cs.valid?
       puts cs.smash!
     else
-      STDERR.puts("Invalid input")
-      exit(1)
+      abort("Invalid input spec")
     end
   end
 
