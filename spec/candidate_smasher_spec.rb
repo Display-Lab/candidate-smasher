@@ -141,9 +141,10 @@ RSpec.describe CandidateSmasher do
     let(:template) { {"@id" => "http://example.com/T1",
                        "colors" => "4" } }
 
-    it "assigns a random id" do
+    it "assigns a random id using application prefix and hash" do
       c = CandidateSmasher.make_candidate( template, performer )
-      expect(c["@id"]).to match(/^candidate.internal\/[a-f0-9]{32}$/)
+      prefix = CandidateSmasher::ID_PREFIX
+      expect(c["@id"]).to match(/^#{prefix}[a-f0-9]{32}$/)
     end
     
     it "assigns the candidate type" do

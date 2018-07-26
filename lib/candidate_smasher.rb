@@ -3,6 +3,7 @@ require "json/ld"
 require "digest"
 
 class CandidateSmasher
+  ID_PREFIX = "http://inference.es/app/"
   SPEK_IRI = "http://purl.obolibrary.org/obo/fio#SPEK"
   HAS_PERFORMER_IRI= "http://purl.obolibrary.org/obo/fio#HasPerformer"
   USES_TEMPLATE_IRI = "http://purl.obolibrary.org/obo/fio#UsesTemplate"
@@ -12,6 +13,7 @@ class CandidateSmasher
   CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#Candidate"
   HAS_CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#hasCandidate"
   TEMPLATE_CLASS_IRI = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
+
 
   attr_accessor :spek_hsh, :template_lib
   
@@ -102,7 +104,7 @@ class CandidateSmasher
 
     candidate = template.merge performer
     candidate["@type"] = CANDIDATE_IRI
-    candidate["@id"] = "candidate.internal/" + Digest::MD5.hexdigest(t_id + p_id)
+    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest(t_id + p_id)
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
     candidate[ANCESTOR_TEMPLATE_IRI]  = t_id
 
