@@ -20,20 +20,20 @@ RSpec.describe CandidateSmasher do
           CandidateSmasher::USES_ISR_IRI => [] }
   end
 
-  let(:template_content) do
+  let(:ext_template_content) do
     {
-      "@graph":[
+      "@graph" => [
       {
-        "@id": "https://inferences.es/app/onto#TPLT001",
-        "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name": "t1",
-        "performer_cardinality": 2
+        "@id"   => "https://inferences.es/app/onto#TPLT001",
+        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+        "name"  => "t1",
+        "performer_cardinality" => 2
       },
       {
-        "@id": "https://inferences.es/app/onto#TPLT002",
-        "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name": "t2",
-        "performer_cardinality": 1
+        "@id" => "https://inferences.es/app/onto#TPLT002",
+        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+        "name" => "t2",
+        "performer_cardinality" => 1
       } ]
     }
   end
@@ -90,10 +90,52 @@ RSpec.describe CandidateSmasher do
         expect(smasher_blank.valid?).to be(true)
       end
     end
+  end
+
+  describe "#load_ext_templates" do
+    context"with no external template metadata" do
+      it "returns empty graph" do
+        result = smasher_blank.load_ext_templates(nil)
+        expect(result).to be_instance_of(RDF::Graph).and be_empty
+      end
+    end
+
+    context"using external template metadata" do
+      it "returns loads the graph" do
+        fixture_file = 'spec/fixtures/templates-metadata.json'
+        result = smasher_blank.load_ext_templates(fixture_file)
+
+        expect(result).to be_instance_of(RDF::Graph)
+        expect(result).not_to be_empty
+      end
+    end
 
   end
 
-  describe "make_candidate" do
+  describe "#merge_ext_templates" do
+    context "given three ids" do
+      it "returns one template per id provided" do
+        in_templates = [{'@id' => 'http://example.com/foo'},
+                        {'@id' => 'http://example.com/bar'},
+                        {'@id' => 'http://example.com/baz'}]
+        external_templates = RDF::Graph.new
+        result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
+        expect(result.subjects.count).to eq(3)
+      end
+    end
+
+    context "given no ids" do
+      it "returns an empty graph" do
+        in_templates = Array.new
+        external_templates = RDF::Graph.new
+        result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
+        expect(result).to be_instance_of(RDF::Graph)
+        expect(result.subjects.count).to eq(0)
+      end
+    end
+  end
+
+  describe "#make_candidate" do
     let(:performer) { {"@id" => "http://example.com/P1",
                        "name" => "foo" } }
     let(:template) { {"@id" => "http://example.com/T1",

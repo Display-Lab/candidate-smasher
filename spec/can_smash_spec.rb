@@ -14,6 +14,15 @@ RSpec.describe CanSmashCLI do
                   }
   BLANK_JSON = BLANK_CONTENT.to_json
 
+  TEMPLATE_MD = { 
+    "@graph" => [
+      { "@id"   => "https://inferences.es/app/onto#TPLT001",
+        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+        "name"  => "t1",
+        "performer_cardinality" => 2
+      }] 
+    }
+
   subject { CanSmashCLI.new }
 
   context "using defaults" do
@@ -27,7 +36,9 @@ RSpec.describe CanSmashCLI do
   context "given invalid spec" do
     it "emits an error on stderr" do
       simulate_stdin('Im a invalid!') do 
-        expect {subject.generate}.to raise_error(SystemExit).and output("Invalid input spec\n").to_stderr
+        expect {subject.generate}
+          .to raise_error(SystemExit)
+          .and output("Invalid input spec\n").to_stderr
       end
     end
   end

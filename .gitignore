@@ -1,0 +1,6 @@
+# ignore vim files
+*.sess
+*.swp
+
+# ignore scratch work and gists
+scratch.rb

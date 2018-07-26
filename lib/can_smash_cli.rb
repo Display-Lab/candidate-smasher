@@ -22,7 +22,9 @@ class CanSmashCLI < Thor
       exit(1)
     end
 
-    cs = CandidateSmasher.new content
+    metadata = read_metadata md_source
+
+    cs = CandidateSmasher.new(content, md_source)
     if cs.valid?
       puts cs.smash!
     else
@@ -40,5 +42,9 @@ class CanSmashCLI < Thor
     else
       raise InputError.new("Bad input path")
     end
+  end
+
+  def read_metadata(source)
+
   end
 end
