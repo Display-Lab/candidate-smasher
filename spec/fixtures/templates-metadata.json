@@ -66,7 +66,7 @@
       "time_cardinality": 3
     },
     {
-      "@id": "https://inferences.es/app/onto#TPLT00Blank",
+      "@id": "https://inferences.es/app/onto#TPLTBlank",
       "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
       "name": "tblank" 
     }
