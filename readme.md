@@ -16,3 +16,8 @@ or
 ```sh
 cat spek.json | cansmash spek.json
 ```
+
+## Examples
+```sh
+bin/cansmash generate --path spec/fixtures/spek.json --md-source=spec/fixtures/templates-metadata.json
+```

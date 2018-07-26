@@ -99,42 +99,13 @@
     }
   ],
   "http://purl.obolibrary.org/obo/fio#UsesTemplate": [
-    {
-      "@id": "https://inference.es/app/onto#templateNamedBaz",
-      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
-      "http://purl.obolibrary.org/obo/RO_0000091": [
-        {
-          "@value": "http://purl.obolibrary.org/obo/fio#NormativeComparator"
-        }
-      ]
-    },
-    {
-      "@id": "https://inference.es/app/onto#templateNamedMab",
-      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
-      "http://purl.obolibrary.org/obo/RO_0000091": [
-        {
-          "@value": "http://purl.obolibrary.org/obo/fio#PromotionFraming"
-        }
-      ]
-    },
-    {
-      "@id": "https://inference.es/app/onto#templateNamedMuq",
-      "@type": "http://purl.obolibrary.org/obo/fio#RIDTemplate",
-      "http://purl.obolibrary.org/obo/fio#PerformerCardinality": [
-        {
-          "@value": 3
-        }
-      ],
-      "http://purl.obolibrary.org/obo/fio#TimeCardinality": [
-        {
-          "@value": 3
-        }
-      ],
-      "http://purl.obolibrary.org/obo/RO_0000091": [
-        {
-          "@value": "http://purl.obolibrary.org/obo/fio#PreventionFraming"
-        }
-      ]
-    }
+    { "@id": "https://inferences.es/app/onto#TPLT001" },
+    { "@id": "https://inferences.es/app/onto#TPLT002" },
+    { "@id": "https://inferences.es/app/onto#TPLT003" },
+    { "@id": "https://inferences.es/app/onto#TPLT004" },
+    { "@id": "https://inferences.es/app/onto#TPLT005" },
+    { "@id": "https://inferences.es/app/onto#TPLT006" },
+    { "@id": "https://inferences.es/app/onto#TPLT007" },
+    { "@id": "https://inferences.es/app/onto#TPLTBlank" }
   ]
 }

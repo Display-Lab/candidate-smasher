@@ -6,6 +6,8 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gem "thor"
 gem "json-ld"
+gem "rdf"
+gem "rdf-vocab"
 
 group :development do
   gem "rspec"
