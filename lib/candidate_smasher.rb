@@ -14,7 +14,6 @@ class CandidateSmasher
   HAS_CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#hasCandidate"
   TEMPLATE_CLASS_IRI = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
 
-
   attr_accessor :spek_hsh, :template_lib
   
   def initialize(input_string="{}", templates_src=nil)
@@ -82,13 +81,14 @@ class CandidateSmasher
   def generate_candidates
     performers = @spek_hsh[HAS_PERFORMER_IRI] || Array.new
     spec_templates = @spek_hsh[USES_TEMPLATE_IRI] || Array.new
+
     rdf_templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
+
     templates = templates_rdf_to_json rdf_templates
 
     res = performers.collect do |p|
       templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
     end
-
     res.flatten
   end
 

@@ -1,17 +1,33 @@
 require 'json'
 require './lib/candidate_smasher'
 
+
+HAS_DISPOSITION_IRI = "http://purl.obolibrary.org/obo/RO_0000091"
+P_CARDINALITY_IRI = "http://example.com/ns#performer_cardinality"
+
+def json_to_graph(json_string)
+  reader = JSON::LD::Reader.new(input=json_string)
+  graph = RDF::Graph.new
+  graph.insert_statements reader
+  return graph
+end
+
 RSpec.describe CandidateSmasher do
-  let(:base_content) do { "@type" => CandidateSmasher::SPEK_IRI,
-          CandidateSmasher::HAS_PERFORMER_IRI=> [
-            {"@id" => "http://example.com/P1"},
-            {"@id" => "http://example.com/P2"},
-            {"@id" => "http://example.com/P3"} ],
-          CandidateSmasher::USES_TEMPLATE_IRI => [
-            {"@id" => "https://inferences.es/app/onto#TPLT001"},
-            {"@id" => "https://inferences.es/app/onto#TPLT002"},
-            {"@id" => "https://inferences.es/app/onto#TPLT003"} ],
-          CandidateSmasher::USES_ISR_IRI => [] }
+  let(:base_content) do
+    { "@type" => CandidateSmasher::SPEK_IRI,
+      CandidateSmasher::HAS_PERFORMER_IRI=> [
+        {"@id" => "http://example.com/P1",
+         HAS_DISPOSITION_IRI => "promotion_focus"},
+        {"@id" => "http://example.com/P2",
+         HAS_DISPOSITION_IRI => "prevention_focus"},
+        {"@id" => "http://example.com/P3",
+         HAS_DISPOSITION_IRI => "dancing"} ],
+      CandidateSmasher::USES_TEMPLATE_IRI => [
+        {"@id" => "https://inferences.es/app/onto#TPLT001"},
+        {"@id" => "https://inferences.es/app/onto#TPLT002"},
+        {"@id" => "https://inferences.es/app/onto#TPLT003"} ],
+      CandidateSmasher::USES_ISR_IRI => [] 
+    }
   end
 
   let(:blank_content) do { "@type" => CandidateSmasher::SPEK_IRI,
@@ -49,6 +65,13 @@ RSpec.describe CandidateSmasher do
   let(:smasher_base) do
     c = CandidateSmasher.new 
     c.spek_hsh = base_content
+    c
+  end
+
+  let(:smasher_ext_tmpl) do
+    c = CandidateSmasher.new 
+    c.spek_hsh = base_content
+    c.template_lib = json_to_graph(ext_template_content.to_json)
     c
   end
 
@@ -177,6 +200,13 @@ RSpec.describe CandidateSmasher do
         expect(cands.length).to be(cands.uniq.length)
       end
     end
+
+    context "with external templates" do
+      it "returns candidates with attributes of performer and template" do
+        cands = smasher_ext_tmpl.generate_candidates
+        expect( cands.all?{|c| c.has_key? HAS_DISPOSITION_IRI } )
+      end
+    end
   end
 
   describe "#smash!" do
@@ -195,6 +225,11 @@ RSpec.describe CandidateSmasher do
     end
 
     context "with template metadata" do
+      it "returns candidates with attributes of performer and template" do
+        result = smasher_ext_tmpl.smash!
+        candidates = JSON.parse(result)[CandidateSmasher::HAS_CANDIDATE_IRI]
+        expect( candidates.all?{|c| c.has_key? HAS_DISPOSITION_IRI} )
+      end
     end
 
     context "with multiple content" do
