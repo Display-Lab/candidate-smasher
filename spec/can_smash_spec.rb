@@ -6,6 +6,9 @@ RSpec.configure do |c|
   c.include IoSpecHelper
 end
 
+HAS_DISPOSITION_IRI = "http://purl.obolibrary.org/obo/RO_0000091"
+FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
+
 RSpec.describe CanSmashCLI do
   BLANK_CONTENT = { "@type" => CandidateSmasher::SPEK_IRI,
                     CandidateSmasher::HAS_PERFORMER_IRI=> [],
@@ -30,6 +33,36 @@ RSpec.describe CanSmashCLI do
       simulate_stdin(BLANK_JSON) do 
         expect {subject.generate}.to output.to_stdout
       end
+    end
+  end
+
+  context "integration test" do
+    let(:path_to_spek) {File.join(FIXTURE_DIR, 'spek.json')}
+    let(:path_to_tmpl) {File.join(FIXTURE_DIR, 'templates-metadata.json')}
+    it "output expected number of candidates with performer disposition" do
+      subject.options = {
+        path: path_to_spek, 
+        md_source: path_to_tmpl
+      }
+
+      # Capture CLI output
+      output = capture_stdout do
+        subject.generate
+      end
+
+      # Calculate number of expected candidates that should include 'has disposition'
+      spek = JSON.parse(File.read(path_to_spek))
+      performers = spek[CandidateSmasher::HAS_PERFORMER_IRI]
+      n_performers_disp = performers.select{|c| c.has_key? HAS_DISPOSITION_IRI}.count
+      n_templates = spek[CandidateSmasher::USES_TEMPLATE_IRI].count
+      n_expected_cands_disp = n_performers_disp * n_templates
+
+      # Count the number of output candidates that include 'has disposition'
+      out_hsh = JSON.parse output
+      candidates = out_hsh[CandidateSmasher::HAS_CANDIDATE_IRI]
+      n_cands_disp = candidates.select {|c| c.has_key? HAS_DISPOSITION_IRI}.count
+
+      expect(n_cands_disp).to eq(n_expected_cands_disp)
     end
   end
 
