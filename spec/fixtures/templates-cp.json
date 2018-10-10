@@ -1,0 +1,28 @@
+{
+  "@context":{
+    "@vocab": "http://schema.org/",
+    "has_disposition": "http://purl.obolibrary.org/obo/RO_0000091",
+    "performer_cardinality": "http://example.com/ns#performer_cardinality",
+    "time_cardinality": "http://example.com/ns#time_cardinality",
+    "name": "http://example.com/ns#name",
+    "uses_intervention_property": "http://example.com/ns#uses_intervention_property"
+  },
+  "@graph":[
+    {
+      "@id": "https://example.com/app/onto#ShowGapTemplate",
+      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "name": "gap figure",
+      "uses_intervention_property":[ 
+        "normative_comparator",
+        "peer_comparison"
+      ]
+    },
+    {
+      "@id": "https://inferences.es/app/onto#ShowTrendTemplate",
+      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "name": "trend figure",
+      "uses_intervention_property":[ "show_trend"]
+    }
+
+  ]
+}
