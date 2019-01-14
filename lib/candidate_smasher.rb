@@ -3,16 +3,16 @@ require "json/ld"
 require "digest"
 
 class CandidateSmasher
-  ID_PREFIX = "http://example.com/app/"
-  SPEK_IRI = "http://example.com/slowmo#slowmo_0000140"
-  HAS_PERFORMER_IRI= "http://example.com/slowmo#slowmo_0000001"
-  USES_TEMPLATE_IRI = "http://example.com/slowmo#slowmo_0000003"
-  USES_ISR_IRI = "http://example.com/slowmo#slowmo_0000002"
-  ANCESTOR_PERFORMER_IRI = "http://purl.obolibrary.org/obo/fio#AncestorPerformer"
-  ANCESTOR_TEMPLATE_IRI = "http://purl.obolibrary.org/obo/fio#AncestorTemplate"
-  CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#Candidate"
-  HAS_CANDIDATE_IRI = "http://purl.obolibrary.org/obo/fio#hasCandidate"
-  TEMPLATE_CLASS_IRI = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
+  ID_PREFIX              = "http://example.com/app#"
+  SPEK_IRI               = "http://example.com/slowmo#slowmo_0000140"
+  HAS_PERFORMER_IRI      = "http://example.com/slowmo#slowmo_0000001"
+  USES_TEMPLATE_IRI      = "http://example.com/slowmo#slowmo_0000003"
+  USES_ISR_IRI           = "http://example.com/slowmo#slowmo_0000002"
+  ANCESTOR_PERFORMER_IRI = "http://example.com/slowmo#AncestorPerformer"
+  ANCESTOR_TEMPLATE_IRI  = "http://example.com/slowmo#AncestorTemplate"
+  CANDIDATE_IRI          = "http://example.com/cpo#cpo_0000053"
+  HAS_CANDIDATE_IRI      = "http://example.com/slowmo#hasCandidate"
+  TEMPLATE_CLASS_IRI     = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
 
   attr_accessor :spek_hsh, :template_lib
   
