@@ -5,7 +5,7 @@
   },
   "@graph":[
     {
-      "@id": "https://example.com/app#ShowGapTemplate",
+      "@id": "http://example.com/app#ShowGapTemplate",
       "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
       "name": "gap figure",
       "uses_intervention_property":[ 
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "@id": "https://example.com/app#ShowTrendTemplate",
+      "@id": "http://example.com/app#ShowTrendTemplate",
       "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
       "name": "trend figure",
       "uses_intervention_property":[ "show_trend"]
