@@ -6,7 +6,6 @@ RSpec.configure do |c|
   c.include IoSpecHelper
 end
 
-HAS_DISPOSITION_IRI = "http://purl.obolibrary.org/obo/RO_0000091"
 FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
 
 RSpec.describe CanSmashCLI do

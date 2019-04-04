@@ -1,14 +1,15 @@
 {
-  "@id": "https://inference.es/app/onto#IPLARC_SPEK",
-  "@type": "http://purl.obolibrary.org/obo/fio#SPEK",
-  "http://purl.obolibrary.org/obo/fio#HasPerformer": [
+  "@id": "http://example.com/app#IPLARC_SPEK",
+  "@type": "http://example.com/slowmo#spek",
+  "http://example.com/slowmo#IsAboutPerformer": [
     {
-      "@id": "https://inference.es/app/onto#Alice",
-      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001"
+      "@id": "http://example.com/app#Alice",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
     },
     {
-      "@id": "https://inference.es/app/onto#Carol",
-      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "@id": "http://example.com/app#Carol",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
+    },
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
           "@value": "http://purl.obolibrary.org/obo/fio#CapabilityBarrier"
@@ -16,8 +17,8 @@
       ]
     },
     {
-      "@id": "https://inference.es/app/onto#Dan",
-      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "@id": "http://example.com/app#Dan",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
           "@value": "http://purl.obolibrary.org/obo/fio#PromotionFocus"
@@ -28,8 +29,8 @@
       ]
     },
     {
-      "@id": "https://inference.es/app/onto#Elaine",
-      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001",
+      "@id": "http://example.com/app#Elaine",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
           "@value": "http://purl.obolibrary.org/obo/fio#PreventionFocus"
@@ -40,11 +41,11 @@
       ]
     },
     {
-      "@id": "https://inference.es/app/onto#Frank",
-      "@type": "http://purl.obolibrary.org/obo/fio#FIO_0000001"
+      "@id": "http://example.com/app#Frank",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
     }
   ],
-  "https://purl.obolibrary.org/need/definiton#RELATED_LOCATION": [
+  "http://purl.obolibrary.org/need/definiton#RELATED_LOCATION": [
     {
       "@type": "http://schema.org/Organization",
       "http://schema.org/address": [
@@ -84,28 +85,36 @@
       ]
     }
   ],
-  "http://purl.obolibrary.org/obo/fio#UsesISR": [
+  "http://example.com/slowmo#IsAboutCausalPathway": [
     {
-      "@id": "https://inference.es/app/onto#ISRnamedDuq",
-      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+      "@id": "http://example.com/app#CausalPathwayDuq",
+      "@type": "http://purl.obolibrary.org/obo/cpo_0000029"
     },
     {
-      "@id": "https://inference.es/app/onto#ISRnamedBar",
-      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+      "@id": "http://example.com/app#CausalPathwayBar",
+      "@type": "http://purl.obolibrary.org/obo/cpo_0000029"
     },
     {
-      "@id": "https://inference.es/app/onto#ISRnamedFoo",
-      "@type": "http://purl.obolibrary.org/obo/fio#ISR"
+      "@id": "http://example.com/app#CausalPathwayFoo",
+      "@type": "http://purl.obolibrary.org/obo/cpo_0000029"
     }
   ],
-  "http://purl.obolibrary.org/obo/fio#UsesTemplate": [
-    { "@id": "https://inferences.es/app/onto#TPLT001" },
-    { "@id": "https://inferences.es/app/onto#TPLT002" },
-    { "@id": "https://inferences.es/app/onto#TPLT003" },
-    { "@id": "https://inferences.es/app/onto#TPLT004" },
-    { "@id": "https://inferences.es/app/onto#TPLT005" },
-    { "@id": "https://inferences.es/app/onto#TPLT006" },
-    { "@id": "https://inferences.es/app/onto#TPLT007" },
-    { "@id": "https://inferences.es/app/onto#TPLTBlank" }
+  "http://example.com/slowmo#IsAboutTemplate": [
+    { "@id": "http://example.com/app#TPLT001",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT002", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT003", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT004", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT005", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT006", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLT007", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
+    { "@id": "http://example.com/app#TPLTBlank", 
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002"}
   ]
 }
