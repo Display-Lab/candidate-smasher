@@ -28,7 +28,7 @@ class CanSmashCLI < Thor
     if cs.valid?
       puts cs.smash!
     else
-      abort("Invalid input spec")
+      abort("Invalid input spec. Missing: #{cs.list_missing}")
     end
   end
 

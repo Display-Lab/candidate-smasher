@@ -11,7 +11,7 @@ FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
 RSpec.describe CanSmashCLI do
   BLANK_CONTENT = { "@type" => CandidateSmasher::SPEK_IRI,
                     CandidateSmasher::HAS_PERFORMER_IRI=> [],
-                    CandidateSmasher::USES_TEMPLATE_IRI => [],
+                    CandidateSmasher::ABOUT_TEMPLATE_IRI => [],
                     CandidateSmasher::USES_ISR_IRI => [] 
                   }
   BLANK_JSON = BLANK_CONTENT.to_json
@@ -38,6 +38,7 @@ RSpec.describe CanSmashCLI do
   context "integration test" do
     let(:path_to_spek) {File.join(FIXTURE_DIR, 'spek.json')}
     let(:path_to_tmpl) {File.join(FIXTURE_DIR, 'templates-metadata.json')}
+
     it "output expected number of candidates with performer disposition" do
       subject.options = {
         path: path_to_spek, 
@@ -53,7 +54,7 @@ RSpec.describe CanSmashCLI do
       spek = JSON.parse(File.read(path_to_spek))
       performers = spek[CandidateSmasher::HAS_PERFORMER_IRI]
       n_performers_disp = performers.select{|c| c.has_key? HAS_DISPOSITION_IRI}.count
-      n_templates = spek[CandidateSmasher::USES_TEMPLATE_IRI].count
+      n_templates = spek[CandidateSmasher::ABOUT_TEMPLATE_IRI].count
       n_expected_cands_disp = n_performers_disp * n_templates
 
       # Count the number of output candidates that include 'has disposition'
@@ -70,7 +71,7 @@ RSpec.describe CanSmashCLI do
       simulate_stdin('Im a invalid!') do 
         expect {subject.generate}
           .to raise_error(SystemExit)
-          .and output("Invalid input spec\n").to_stderr
+          .and output(/Invalid input spec/).to_stderr
       end
     end
   end

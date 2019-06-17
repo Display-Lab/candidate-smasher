@@ -8,8 +8,7 @@
     },
     {
       "@id": "http://example.com/app#Carol",
-      "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
-    },
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
           "@value": "http://purl.obolibrary.org/obo/fio#CapabilityBarrier"

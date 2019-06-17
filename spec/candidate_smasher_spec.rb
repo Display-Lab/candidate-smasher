@@ -22,7 +22,7 @@ RSpec.describe CandidateSmasher do
          HAS_DISPOSITION_IRI => "prevention_focus"},
         {"@id" => "http://example.com/P3",
          HAS_DISPOSITION_IRI => "dancing"} ],
-      CandidateSmasher::USES_TEMPLATE_IRI => [
+      CandidateSmasher::ABOUT_TEMPLATE_IRI => [
         {"@id" => "https://inferences.es/app/onto#TPLT001"},
         {"@id" => "https://inferences.es/app/onto#TPLT002"},
         {"@id" => "https://inferences.es/app/onto#TPLT003"} ],
@@ -32,7 +32,7 @@ RSpec.describe CandidateSmasher do
 
   let(:blank_content) do { "@type" => CandidateSmasher::SPEK_IRI,
           CandidateSmasher::HAS_PERFORMER_IRI=> [],
-          CandidateSmasher::USES_TEMPLATE_IRI => [],
+          CandidateSmasher::ABOUT_TEMPLATE_IRI => [],
           CandidateSmasher::USES_ISR_IRI => [] }
   end
 
