@@ -27,20 +27,17 @@ class CandidateSmasher
   end
 
   def valid?
-    checks = [@spek_hsh["@type"] == SPEK_IRI,
-              @spek_hsh.has_key?(HAS_PERFORMER_IRI),
-              @spek_hsh.has_key?(ABOUT_TEMPLATE_IRI),
-              @spek_hsh.has_key?(USES_ISR_IRI)]
-    checks.all?{|c| c}
+    checks().values.all?{|c| c}
+  end
+
+  def checks
+    {"@type": @spek_hsh["@type"] == SPEK_IRI, 
+     "#{HAS_PERFORMER_IRI}": @spek_hsh.has_key?(HAS_PERFORMER_IRI), 
+     "#{ABOUT_TEMPLATE_IRI}": !@template_lib.empty? || @spek_hsh.has_key?(ABOUT_TEMPLATE_IRI)}
   end
 
   def list_missing
-    mlist = Array.new
-    req_keys = [ HAS_PERFORMER_IRI, "@type"]
-    req_keys << ABOUT_TEMPLATE_IRI unless @template_lib.empty?
-
-    missing_keys = req_keys.select{|k| !@spek_hsh.has_key?(k)}
-    mlist + missing_keys
+    checks().select{|k,v| v}.keys
   end
 
   def load_ext_templates(templates_src)

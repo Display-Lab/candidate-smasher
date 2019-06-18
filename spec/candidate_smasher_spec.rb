@@ -104,14 +104,34 @@ RSpec.describe CandidateSmasher do
         expect(smasher_blank.valid?).to be(false)
       end
 
-      it "checks for required attributes" do
+      it "requires spek to have performers" do
         smasher_blank.spek_hsh.delete(CandidateSmasher::HAS_PERFORMER_IRI)
         expect(smasher_blank.valid?).to be(false)
+      end
+
+      it "requires spek to have templates" do
+        smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
+        expect(smasher_blank.valid?).to be(false)
+      end
+
+      it "allows external templates as substitute for spek templates" do
+        smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
+        smasher_blank.template_lib = {foo_iri: "ex", bar_iri: "ex"}
+        expect(smasher_blank.valid?).to be(true)
       end
 
       it "is valid when required attributes are present" do
         expect(smasher_blank.valid?).to be(true)
       end
+    end
+  end
+
+  describe "#list_missing" do
+    it "returns clues about failed validity checks." do
+      smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
+      smasher_blank.spek_hsh.delete(CandidateSmasher::HAS_PERFORMER_IRI)
+      smasher_blank.spek_hsh.delete("@type")
+      expect(smasher_blank.list_missing.length == 3)
     end
   end
 
