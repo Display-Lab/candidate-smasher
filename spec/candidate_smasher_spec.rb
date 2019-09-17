@@ -16,12 +16,26 @@ RSpec.describe CandidateSmasher do
   let(:base_content) do
     { "@type" => CandidateSmasher::SPEK_IRI,
       CandidateSmasher::HAS_PERFORMER_IRI=> [
-        {"@id" => "http://example.com/P1",
-         HAS_DISPOSITION_IRI => "promotion_focus"},
-        {"@id" => "http://example.com/P2",
-         HAS_DISPOSITION_IRI => "prevention_focus"},
-        {"@id" => "http://example.com/P3",
-         HAS_DISPOSITION_IRI => "dancing"} ],
+        {"@id" => "_:p1",
+          HAS_DISPOSITION_IRI => [
+            {"@type": "promotion_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1"}
+          ]
+        },
+        {"@id" => "_:p2",
+          HAS_DISPOSITION_IRI => [
+            {"@type":"prevention_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1" },
+            {"@type":"positive_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m1" }
+          ]
+        },
+        {"@id" => "_:p3",
+          HAS_DISPOSITION_IRI => [
+            {"@type":"prevention_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1" },
+            {"@type":"positive_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m1" },
+            {"@type":"promotion_focus",  CandidateSmasher::REGARDING_MEASURE => "_:m2" },
+            {"@type":"negative_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m2" }
+          ]
+        } 
+      ],
       CandidateSmasher::ABOUT_TEMPLATE_IRI => [
         {"@id" => "https://inferences.es/app/onto#TPLT001"},
         {"@id" => "https://inferences.es/app/onto#TPLT002"},
@@ -211,13 +225,25 @@ RSpec.describe CandidateSmasher do
     end
 
     context "with multiple content" do
-      it "returns (performers times templates) number of candidates " do
-        expect(smasher_base.generate_candidates.length).to be(9)
-      end
-
       it "returns candidates with unique ids" do
         cands = smasher_base.generate_candidates
         expect(cands.length).to be(cands.uniq.length)
+      end
+
+      it "number of candidates is num of templates x num of performer-measures" do
+        # Number of templates
+        num_templates = smasher_base.spek_hsh[CandidateSmasher::ABOUT_TEMPLATE_IRI].length
+
+        # Number of performer-measures
+        performers = smasher_base.spek_hsh[CandidateSmasher::HAS_PERFORMER_IRI]
+        performer_measure_lengths = performers.map do |p| 
+          p[HAS_DISPOSITION_IRI].map{|d| d[CandidateSmasher::REGARDING_MEASURE]}.uniq.length
+        end
+        num_performer_measures = performer_measure_lengths.sum
+
+        expected_candidate_count = num_templates * num_performer_measures
+        cands = smasher_base.generate_candidates
+        expect(cands.length).to eq(expected_candidate_count)
       end
     end
 
