@@ -15,6 +15,7 @@ class CandidateSmasher
   TEMPLATE_CLASS_IRI     = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
   REGARDING_MEASURE      = "http://example.com/slowmo#RegardingMeasure"
   ABOUT_MEASURE_IRI      = "http://example.com/slowmo#IsAboutMeasure"
+  HAS_DISPOSITION_IRI    = "http://purl.obolibrary.org/obo/RO_0000091"
 
   attr_accessor :spek_hsh, :template_lib
   

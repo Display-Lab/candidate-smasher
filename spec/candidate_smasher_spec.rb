@@ -2,7 +2,7 @@ require 'json'
 require './lib/candidate_smasher'
 
 
-HAS_DISPOSITION_IRI = "http://purl.obolibrary.org/obo/RO_0000091"
+HAS_DISPOSITION_IRI = CandidateSmasher::HAS_DISPOSITION_IRI
 P_CARDINALITY_IRI = "http://example.com/ns#performer_cardinality"
 
 def json_to_graph(json_string)
