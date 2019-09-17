@@ -3,11 +3,11 @@
   "@type": "http://example.com/slowmo#spek",
   "http://example.com/slowmo#IsAboutPerformer": [
     {
-      "@id": "http://example.com/app#Alice",
+      "@id": "_:pAlice",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
     },
     {
-      "@id": "http://example.com/app#Carol",
+      "@id": "_:pCarol",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "@id": "http://example.com/app#Dan",
+      "@id": "_:pDan",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
@@ -28,7 +28,7 @@
       ]
     },
     {
-      "@id": "http://example.com/app#Elaine",
+      "@id": "_:pElaine",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "@id": "http://example.com/app#Frank",
+      "@id": "_:pFrank",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
     }
   ],
