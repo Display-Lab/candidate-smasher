@@ -3,16 +3,18 @@ require "json/ld"
 require "digest"
 
 class CandidateSmasher
-  ID_PREFIX              = "http://example.com/app#"
+  ID_PREFIX              = "_:c"
   SPEK_IRI               = "http://example.com/slowmo#spek"
   HAS_PERFORMER_IRI      = "http://example.com/slowmo#IsAboutPerformer"
-  ABOUT_TEMPLATE_IRI      = "http://example.com/slowmo#IsAboutTemplate"
+  ABOUT_TEMPLATE_IRI     = "http://example.com/slowmo#IsAboutTemplate"
   USES_ISR_IRI           = "http://example.com/slowmo#IsAboutCausalPathway"
   ANCESTOR_PERFORMER_IRI = "http://example.com/slowmo#AncestorPerformer"
   ANCESTOR_TEMPLATE_IRI  = "http://example.com/slowmo#AncestorTemplate"
   CANDIDATE_IRI          = "http://example.com/cpo#cpo_0000053"
   HAS_CANDIDATE_IRI      = "http://example.com/slowmo#HasCandidate"
   TEMPLATE_CLASS_IRI     = "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
+  REGARDING_MEASURE      = "http://example.com/slowmo#RegardingMeasure"
+  ABOUT_MEASURE_IRI      = "http://example.com/slowmo#IsAboutMeasure"
 
   attr_accessor :spek_hsh, :template_lib
   
@@ -84,15 +86,31 @@ class CandidateSmasher
     end
   end
 
+  # Create array of performers containing only dispositions related to a single measure
+  def split_by_measure(performer)
+    dispositions = performer[HAS_DISPOSITION_IRI]
+    return [performer] if dispositions.nil?
+
+    unique_measures = dispositions.map{|d| d[REGARDING_MEASURE]}.uniq
+    performer_measures = unique_measures.map do |measure|
+      p = performer.dup
+      p[HAS_DISPOSITION_IRI] = dispositions.select do |d|
+        d[REGARDING_MEASURE] == measure
+      end
+      p
+    end
+    return performer_measures
+  end
+
   def generate_candidates
     performers = @spek_hsh[HAS_PERFORMER_IRI] || Array.new
+    performers_split = performers.map{|p| split_by_measure(p)}.flatten(1)
+
     spec_templates = @spek_hsh[ABOUT_TEMPLATE_IRI] || Array.new
-
     rdf_templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
-
     templates = templates_rdf_to_json rdf_templates
 
-    res = performers.collect do |p|
+    res = performers_split.collect do |p|
       templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
     end
     res.flatten
