@@ -23,4 +23,8 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  # Allow specifying :focus to particular test to just run that test.
+  #   it "returns candidates with unique ids", :focus do
+  config.filter_run_when_matching :focus
 end
