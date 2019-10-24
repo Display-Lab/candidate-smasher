@@ -3,44 +3,52 @@
   "@type": "http://example.com/slowmo#spek",
   "http://example.com/slowmo#IsAboutPerformer": [
     {
-      "@id": "_:pAlice",
-      "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
-    },
-    {
-      "@id": "_:pCarol",
+      "@id": "_:p1",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
-          "@value": "http://purl.obolibrary.org/obo/fio#CapabilityBarrier"
-        }
-      ]
-    },
-    {
-      "@id": "_:pDan",
-      "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
-      "http://purl.obolibrary.org/obo/RO_0000091": [
-        {
-          "@value": "http://purl.obolibrary.org/obo/fio#PromotionFocus"
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000094",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m2" }
         },
         {
-          "@value": "http://purl.obolibrary.org/obo/fio#CapbilityBarrier"
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000106",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m2" }
+        },
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000104",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m2" }
+        },
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000094",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" }
+        },
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000106",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" }
+        },
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000104",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" }
         }
       ]
     },
     {
-      "@id": "_:pElaine",
+      "@id": "_:p2",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085",
       "http://purl.obolibrary.org/obo/RO_0000091": [
         {
-          "@value": "http://purl.obolibrary.org/obo/fio#PreventionFocus"
-        },
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000094",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" } },
         {
-          "@value": "http://purl.obolibrary.org/obo/fio#CapbilityBarrier"
-        }
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000105",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" } },
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000106",
+          "http://example.com/slowmo#RegardingMeasure": { "@id": "_:m3" } }
       ]
     },
     {
-      "@id": "_:pFrank",
+      "@id": "_:p3",
       "@type": "http://purl.obolibrary.org/obo/psdo_0000085"
     }
   ],
@@ -115,5 +123,35 @@
       "@type": "http://purl.obolibrary.org/obo/psdo_0000002"},
     { "@id": "http://example.com/app#TPLTBlank", 
       "@type": "http://purl.obolibrary.org/obo/psdo_0000002"}
+  ], 
+  "http://example.com/slowmo#IsAboutMeasure": [
+    {
+      "@id": "_:m2",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000102",
+      "http://purl.org/dc/terms/title": [ { "@value": "Low MAP Prevention" } ],
+      "http://schema.org/identifier": [ { "@value": "BP01" } ],
+      "http://example.com/slowmo#WithComparator": [
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000094",
+          "http://purl.org/dc/terms/title": [ { "@value": "GOAL" } ],
+          "http://schema.org/name": [ { "@value": "goal" } ],
+          "http://example.com/slowmo#ComparisonValue": [ { "@value": 0.9 } ]
+        }
+      ]
+    },
+    {
+      "@id": "_:m3",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000102",
+      "http://purl.org/dc/terms/title": [ { "@value": "Avoid Monitoring Gaps" } ],
+      "http://schema.org/identifier": [ { "@value": "BP02" } ],
+      "http://example.com/slowmo#WithComparator": [
+        {
+          "@type": "http://purl.obolibrary.org/obo/psdo_0000094",
+          "http://purl.org/dc/terms/title": [ { "@value": "GOAL" } ],
+          "http://schema.org/name": [ { "@value": "goal" } ],
+          "http://example.com/slowmo#ComparisonValue": [ { "@value": 0.9 } ]
+        }
+      ]
+    }
   ]
 }
