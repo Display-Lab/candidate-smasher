@@ -9,6 +9,9 @@ end
 FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
 
 RSpec.describe CanSmashCLI do
+  REGARDING_MEASURE = CandidateSmasher::REGARDING_MEASURE
+  HAS_DISPOSITION_IRI = CandidateSmasher::HAS_DISPOSITION_IRI
+
   BLANK_CONTENT = { "@type" => CandidateSmasher::SPEK_IRI,
                     CandidateSmasher::HAS_PERFORMER_IRI=> [],
                     CandidateSmasher::ABOUT_TEMPLATE_IRI => [],
@@ -50,19 +53,24 @@ RSpec.describe CanSmashCLI do
         subject.generate
       end
 
-      # Calculate number of expected candidates that should include 'has disposition'
+      # Number of candidates is performer-measures * templates
       spek = JSON.parse(File.read(path_to_spek))
       performers = spek[CandidateSmasher::HAS_PERFORMER_IRI]
-      n_performers_disp = performers.select{|c| c.has_key? HAS_DISPOSITION_IRI}.count
+
+      # How many unique measures does each performer have a disposition about?
+      perf_measures = performers.map do |perf|
+        perf[HAS_DISPOSITION_IRI]&.map{|d| measure = d[REGARDING_MEASURE]["@id"]}&.uniq
+      end
+
+      n_perf_measures = perf_measures.flatten.length
       n_templates = spek[CandidateSmasher::ABOUT_TEMPLATE_IRI].count
-      n_expected_cands_disp = n_performers_disp * n_templates
+      n_expected = n_perf_measures * n_templates
 
       # Count the number of output candidates that include 'has disposition'
       out_hsh = JSON.parse output
       candidates = out_hsh[CandidateSmasher::HAS_CANDIDATE_IRI]
-      n_cands_disp = candidates.select {|c| c.has_key? HAS_DISPOSITION_IRI}.count
 
-      expect(n_cands_disp).to eq(n_expected_cands_disp)
+      expect(candidates.length).to eq(n_expected)
     end
   end
 

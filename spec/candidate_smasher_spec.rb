@@ -1,5 +1,6 @@
 require 'json'
 require './lib/candidate_smasher'
+require 'pry'
 
 
 HAS_DISPOSITION_IRI = CandidateSmasher::HAS_DISPOSITION_IRI
@@ -18,21 +19,28 @@ RSpec.describe CandidateSmasher do
       CandidateSmasher::HAS_PERFORMER_IRI=> [
         {"@id" => "_:p1",
           HAS_DISPOSITION_IRI => [
-            {"@type": "promotion_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1"}
+            {"@type": "promotion_focus",
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1"}}
           ]
         },
         {"@id" => "_:p2",
           HAS_DISPOSITION_IRI => [
-            {"@type":"prevention_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1" },
-            {"@type":"positive_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m1" }
+            {"@type":"prevention_focus",
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type":"positive_trend",
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }}
           ]
         },
         {"@id" => "_:p3",
           HAS_DISPOSITION_IRI => [
-            {"@type":"prevention_focus", CandidateSmasher::REGARDING_MEASURE => "_:m1" },
-            {"@type":"positive_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m1" },
-            {"@type":"promotion_focus",  CandidateSmasher::REGARDING_MEASURE => "_:m2" },
-            {"@type":"negative_trend",   CandidateSmasher::REGARDING_MEASURE => "_:m2" }
+            {"@type":"prevention_focus", 
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type":"positive_trend",   
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type":"promotion_focus",  
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m2" }},
+            {"@type":"negative_trend",   
+             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m2" }}
           ]
         } 
       ],
@@ -227,7 +235,9 @@ RSpec.describe CandidateSmasher do
     context "with multiple content" do
       it "returns candidates with unique ids" do
         cands = smasher_base.generate_candidates
-        expect(cands.length).to be(cands.uniq.length)
+        uniq_ids = cands.map{|c|c["@id"]}.uniq
+
+        expect(uniq_ids.length).to be(cands.length)
       end
 
       it "number of candidates is num of templates x num of performer-measures" do
