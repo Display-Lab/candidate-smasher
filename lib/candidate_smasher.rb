@@ -40,7 +40,7 @@ class CandidateSmasher
   end
 
   def list_missing
-    checks().select{|k,v| v}.keys
+    checks().select{|k,v| !v}.keys
   end
 
   def load_ext_templates(templates_src)
