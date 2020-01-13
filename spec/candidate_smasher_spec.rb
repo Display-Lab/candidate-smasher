@@ -3,9 +3,6 @@ require './lib/candidate_smasher'
 require 'pry'
 
 
-HAS_DISPOSITION_IRI = CandidateSmasher::HAS_DISPOSITION_IRI
-P_CARDINALITY_IRI = "http://example.com/ns#performer_cardinality"
-
 def json_to_graph(json_string)
   reader = JSON::LD::Reader.new(input=json_string)
   graph = RDF::Graph.new
