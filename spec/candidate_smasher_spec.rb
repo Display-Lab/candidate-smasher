@@ -1,58 +1,65 @@
 require 'json'
 require './lib/candidate_smasher'
+require './lib/candidate_smasher_constants'
+require './spec/graph_helpers'
 require 'pry'
 
-
-def json_to_graph(json_string)
-  reader = JSON::LD::Reader.new(input=json_string)
-  graph = RDF::Graph.new
-  graph.insert_statements reader
-  return graph
+RSpec.configure do |c|
+  c.include GraphHelpers
+  CSC = CandidateSmasherConstants
 end
 
 RSpec.describe CandidateSmasher do
   let(:base_content) do
-    { "@type" => CandidateSmasher::SPEK_IRI,
-      CandidateSmasher::HAS_PERFORMER_IRI=> [
+    { "@type" => CSC::SPEK_IRI,
+      CSC::HAS_PERFORMER_IRI=> [
         {"@id" => "_:p1",
-          HAS_DISPOSITION_IRI => [
+          CSC::HAS_DISPOSITION_IRI => [
             {"@type": "promotion_focus",
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1"}}
+             CSC::REGARDING_MEASURE => {"@id" => "_:m1"}}
           ]
         },
         {"@id" => "_:p2",
-          HAS_DISPOSITION_IRI => [
-            {"@type":"prevention_focus",
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
-            {"@type":"positive_trend",
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }}
+          CSC::HAS_DISPOSITION_IRI => [
+            {"@type" => "prevention_focus",
+             CSC::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type" => "positive_trend",
+             CSC::REGARDING_MEASURE => {"@id" => "_:m1" }}
           ]
         },
         {"@id" => "_:p3",
-          HAS_DISPOSITION_IRI => [
-            {"@type":"prevention_focus", 
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
-            {"@type":"positive_trend",   
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m1" }},
-            {"@type":"promotion_focus",  
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m2" }},
-            {"@type":"negative_trend",   
-             CandidateSmasher::REGARDING_MEASURE => {"@id" => "_:m2" }}
+          CSC::HAS_DISPOSITION_IRI => [
+            {"@type" => "prevention_focus", 
+             CSC::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type" => "positive_trend",   
+             CSC::REGARDING_MEASURE => {"@id" => "_:m1" }},
+            {"@type" => "promotion_focus",  
+             CSC::REGARDING_MEASURE => {"@id" => "_:m2" }},
+            {"@type" => "negative_trend",   
+             CSC::REGARDING_MEASURE => {"@id" => "_:m2" }}
           ]
         } 
       ],
-      CandidateSmasher::ABOUT_TEMPLATE_IRI => [
+      CSC::ABOUT_TEMPLATE_IRI => [
         {"@id" => "https://inferences.es/app/onto#TPLT001"},
         {"@id" => "https://inferences.es/app/onto#TPLT002"},
         {"@id" => "https://inferences.es/app/onto#TPLT003"} ],
-      CandidateSmasher::USES_ISR_IRI => [] 
+      CSC::USES_ISR_IRI => [] 
     }
   end
 
-  let(:blank_content) do { "@type" => CandidateSmasher::SPEK_IRI,
-          CandidateSmasher::HAS_PERFORMER_IRI=> [],
-          CandidateSmasher::ABOUT_TEMPLATE_IRI => [],
-          CandidateSmasher::USES_ISR_IRI => [] }
+  let(:comparator_one) do 
+    {"@id" => "_:m1000", "@type" => "social_comparator"}
+  end
+
+  let(:comparator_two) do 
+    {"@id" => "_:m2000", "@type" => "goal_comparator"}
+  end
+
+  let(:blank_content) do { "@type" => CSC::SPEK_IRI,
+          CSC::HAS_PERFORMER_IRI=> [],
+          CSC::ABOUT_TEMPLATE_IRI => [],
+          CSC::USES_ISR_IRI => [] }
   end
 
   let(:ext_template_content) do
@@ -87,12 +94,26 @@ RSpec.describe CandidateSmasher do
     c
   end
 
+  let(:smasher_comps) do
+    c = CandidateSmasher.new 
+
+    # deep copy base content
+    c.spek_hsh = Marshal.load(Marshal.dump(base_content))
+    # Add comparators
+    disps = c.spek_hsh[CSC::HAS_PERFORMER_IRI][2][CSC::HAS_DISPOSITION_IRI]
+    disps[2][CSC::REGARDING_COMPARATOR] = comparator_one
+    disps[3][CSC::REGARDING_COMPARATOR] = comparator_two
+
+    c
+  end
+
   let(:smasher_ext_tmpl) do
     c = CandidateSmasher.new 
     c.spek_hsh = base_content
     c.template_lib = json_to_graph(ext_template_content.to_json)
     c
   end
+
 
   describe "#initialize" do
     it "defaults to empty hash on bad json" do
@@ -124,17 +145,17 @@ RSpec.describe CandidateSmasher do
       end
 
       it "requires spek to have performers" do
-        smasher_blank.spek_hsh.delete(CandidateSmasher::HAS_PERFORMER_IRI)
+        smasher_blank.spek_hsh.delete(CSC::HAS_PERFORMER_IRI)
         expect(smasher_blank.valid?).to be(false)
       end
 
       it "requires spek to have templates" do
-        smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
+        smasher_blank.spek_hsh.delete(CSC::ABOUT_TEMPLATE_IRI)
         expect(smasher_blank.valid?).to be(false)
       end
 
       it "allows external templates as substitute for spek templates" do
-        smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
+        smasher_blank.spek_hsh.delete(CSC::ABOUT_TEMPLATE_IRI)
         smasher_blank.template_lib = {foo_iri: "ex", bar_iri: "ex"}
         expect(smasher_blank.valid?).to be(true)
       end
@@ -147,8 +168,8 @@ RSpec.describe CandidateSmasher do
 
   describe "#list_missing" do
     it "returns clues about failed validity checks." do
-      smasher_blank.spek_hsh.delete(CandidateSmasher::ABOUT_TEMPLATE_IRI)
-      smasher_blank.spek_hsh.delete(CandidateSmasher::HAS_PERFORMER_IRI)
+      smasher_blank.spek_hsh.delete(CSC::ABOUT_TEMPLATE_IRI)
+      smasher_blank.spek_hsh.delete(CSC::HAS_PERFORMER_IRI)
       smasher_blank.spek_hsh.delete("@type")
       expect(smasher_blank.list_missing.length == 3)
     end
@@ -205,19 +226,19 @@ RSpec.describe CandidateSmasher do
 
     it "assigns a random id using application prefix and hash" do
       c = CandidateSmasher.make_candidate( template, performer )
-      prefix = CandidateSmasher::ID_PREFIX
+      prefix = CSC::ID_PREFIX
       expect(c["@id"]).to match(/^#{prefix}[a-f0-9]{32}$/)
     end
     
     it "assigns the candidate type" do
       c = CandidateSmasher.make_candidate( template, performer )
-      expect(c["@type"]).to eq(CandidateSmasher::CANDIDATE_IRI)
+      expect(c["@type"]).to eq(CSC::CANDIDATE_IRI)
     end
 
     it "retains ancestor ids" do
       c = CandidateSmasher.make_candidate( template, performer )
-      expect(c[CandidateSmasher::ANCESTOR_PERFORMER_IRI]).to eq(performer["@id"])
-      expect(c[CandidateSmasher::ANCESTOR_TEMPLATE_IRI]).to eq(template["@id"])
+      expect(c[CSC::ANCESTOR_PERFORMER_IRI]).to eq(performer["@id"])
+      expect(c[CSC::ANCESTOR_TEMPLATE_IRI]).to eq(template["@id"])
     end
 
   end
@@ -237,19 +258,28 @@ RSpec.describe CandidateSmasher do
         expect(uniq_ids.length).to be(cands.length)
       end
 
-      it "number of candidates is num of templates x num of performer-measures" do
-        # Number of templates
-        num_templates = smasher_base.spek_hsh[CandidateSmasher::ABOUT_TEMPLATE_IRI].length
+      #is num of templates x num of performer-measure-comparators
+      it "has expected number of candidates when no comparators specified." do
+        num_templates = smasher_base.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].length
 
-        # Number of performer-measures
-        performers = smasher_base.spek_hsh[CandidateSmasher::HAS_PERFORMER_IRI]
-        performer_measure_lengths = performers.map do |p| 
-          p[HAS_DISPOSITION_IRI].map{|d| d[CandidateSmasher::REGARDING_MEASURE]}.uniq.length
-        end
-        num_performer_measures = performer_measure_lengths.sum
+        performers = smasher_base.spek_hsh[CSC::HAS_PERFORMER_IRI]
+        pmc_total = count_disposition_groups(performers)
+        expected_candidate_count = num_templates * pmc_total
 
-        expected_candidate_count = num_templates * num_performer_measures
         cands = smasher_base.generate_candidates
+        expect(cands.length).to eq(expected_candidate_count)
+      end
+
+      it "has expecte number of candidates when comparators present." do
+        smasher_comps
+
+        num_templates = smasher_comps.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].length
+
+        performers = smasher_comps.spek_hsh[CSC::HAS_PERFORMER_IRI]
+        pmc_total = count_disposition_groups(performers)
+        expected_candidate_count = num_templates * pmc_total
+
+        cands = smasher_comps.generate_candidates
         expect(cands.length).to eq(expected_candidate_count)
       end
     end
@@ -257,7 +287,7 @@ RSpec.describe CandidateSmasher do
     context "with external templates" do
       it "returns candidates with attributes of performer and template" do
         cands = smasher_ext_tmpl.generate_candidates
-        expect( cands.all?{|c| c.has_key? HAS_DISPOSITION_IRI } )
+        expect( cands.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI } )
       end
     end
   end
@@ -266,7 +296,7 @@ RSpec.describe CandidateSmasher do
     context "with empty content" do
       it "adds candidates to the spek" do
         smasher_empty.smash!
-        expect(smasher_empty.spek_hsh.has_key?(CandidateSmasher::HAS_CANDIDATE_IRI)).to be(true)
+        expect(smasher_empty.spek_hsh.has_key?(CSC::HAS_CANDIDATE_IRI)).to be(true)
       end
 
       it "returns json" do
@@ -280,15 +310,15 @@ RSpec.describe CandidateSmasher do
     context "with template metadata" do
       it "returns candidates with attributes of performer and template" do
         result = smasher_ext_tmpl.smash!
-        candidates = JSON.parse(result)[CandidateSmasher::HAS_CANDIDATE_IRI]
-        expect( candidates.all?{|c| c.has_key? HAS_DISPOSITION_IRI} )
+        candidates = JSON.parse(result)[CSC::HAS_CANDIDATE_IRI]
+        expect( candidates.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI} )
       end
     end
 
     context "with multiple content" do
       it "adds candidates to the spek" do
         smasher_base.smash!
-        expect(smasher_base.spek_hsh.has_key?(CandidateSmasher::HAS_CANDIDATE_IRI)).to be(true)
+        expect(smasher_base.spek_hsh.has_key?(CSC::HAS_CANDIDATE_IRI)).to be(true)
       end
 
       it "is idempotent" do

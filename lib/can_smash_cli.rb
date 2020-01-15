@@ -22,7 +22,7 @@ class CanSmashCLI < Thor
       exit(1)
     end
 
-    metadata = read_metadata md_source
+    #metadata = read_metadata md_source
 
     cs = CandidateSmasher.new(content, md_source)
     if cs.valid?
@@ -45,6 +45,6 @@ class CanSmashCLI < Thor
   end
 
   def read_metadata(source)
-
+    #TODO: Implment external md source merge
   end
 end

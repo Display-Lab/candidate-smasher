@@ -1,21 +1,20 @@
 require './lib/can_smash_cli'
+require './lib/candidate_smasher_constants'
 require './spec/io_spec_helper'
 require 'json'
 
 RSpec.configure do |c|
   c.include IoSpecHelper
+  CSC = CandidateSmasherConstants
 end
 
 FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
 
 RSpec.describe CanSmashCLI do
-  REGARDING_MEASURE = CandidateSmasher::REGARDING_MEASURE
-  HAS_DISPOSITION_IRI = CandidateSmasher::HAS_DISPOSITION_IRI
-
-  BLANK_CONTENT = { "@type" => CandidateSmasher::SPEK_IRI,
-                    CandidateSmasher::HAS_PERFORMER_IRI=> [],
-                    CandidateSmasher::ABOUT_TEMPLATE_IRI => [],
-                    CandidateSmasher::USES_ISR_IRI => [] 
+  BLANK_CONTENT = { "@type" => CSC::SPEK_IRI,
+                    CSC::HAS_PERFORMER_IRI=> [],
+                    CSC::ABOUT_TEMPLATE_IRI => [],
+                    CSC::USES_ISR_IRI => [] 
                   }
   BLANK_JSON = BLANK_CONTENT.to_json
 
@@ -55,20 +54,20 @@ RSpec.describe CanSmashCLI do
 
       # Number of candidates is performer-measures * templates
       spek = JSON.parse(File.read(path_to_spek))
-      performers = spek[CandidateSmasher::HAS_PERFORMER_IRI]
+      performers = spek[CSC::HAS_PERFORMER_IRI]
 
       # How many unique measures does each performer have a disposition about?
       perf_measures = performers.map do |perf|
-        perf[HAS_DISPOSITION_IRI]&.map{|d| measure = d[REGARDING_MEASURE]["@id"]}&.uniq
+        perf[CSC::HAS_DISPOSITION_IRI]&.map{|d| measure = d[CSC::REGARDING_MEASURE]["@id"]}&.uniq
       end
 
       n_perf_measures = perf_measures.flatten.length
-      n_templates = spek[CandidateSmasher::ABOUT_TEMPLATE_IRI].count
+      n_templates = spek[CSC::ABOUT_TEMPLATE_IRI].count
       n_expected = n_perf_measures * n_templates
 
       # Count the number of output candidates that include 'has disposition'
       out_hsh = JSON.parse output
-      candidates = out_hsh[CandidateSmasher::HAS_CANDIDATE_IRI]
+      candidates = out_hsh[CSC::HAS_CANDIDATE_IRI]
 
       expect(candidates.length).to eq(n_expected)
     end
