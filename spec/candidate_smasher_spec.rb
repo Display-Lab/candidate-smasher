@@ -6,7 +6,7 @@ require 'pry'
 
 RSpec.configure do |c|
   c.include GraphHelpers
-  CSC = CandidateSmasherConstants
+  CSC ||= CandidateSmasherConstants
 end
 
 RSpec.describe CandidateSmasher do
@@ -258,8 +258,8 @@ RSpec.describe CandidateSmasher do
         expect(uniq_ids.length).to be(cands.length)
       end
 
-      #is num of templates x num of performer-measure-comparators
       it "has expected number of candidates when no comparators specified." do
+        # is num of templates x num of performer-measure-comparators
         num_templates = smasher_base.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].length
 
         performers = smasher_base.spek_hsh[CSC::HAS_PERFORMER_IRI]

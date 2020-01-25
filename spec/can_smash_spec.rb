@@ -5,7 +5,7 @@ require 'json'
 
 RSpec.configure do |c|
   c.include IoSpecHelper
-  CSC = CandidateSmasherConstants
+  CSC ||= CandidateSmasherConstants
 end
 
 FIXTURE_DIR = File.join(File.dirname(__FILE__), 'fixtures')
