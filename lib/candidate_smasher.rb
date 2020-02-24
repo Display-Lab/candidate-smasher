@@ -123,24 +123,35 @@ class CandidateSmasher
   end
 
   # Get the first measure from the dispositions
-  #   Hack to help make uniqu ids after split by measure 
+  #   Hack to help make unique ids after split by measure 
   def self.regarding_measure(split_performer)
     dispositions = split_performer[HAS_DISPOSITION_IRI]
     if dispositions.nil? || dispositions.empty?
       return ""
     end
     disp = dispositions.first
-    disp.dig(REGARDING_MEASURE,"@id")
+    disp.dig(REGARDING_MEASURE,"@id") || ""
+  end
+
+  # Hack to help make unique ids after split by comparator 
+  def self.regarding_comparator(split_performer)
+    dispositions = split_performer[HAS_DISPOSITION_IRI]
+    if dispositions.nil? || dispositions.empty?
+      return ""
+    end
+    disp = dispositions.first
+    disp.dig(REGARDING_COMPARATOR,"@id") || ""
   end
 
   def self.make_candidate(template, performer)
     t_id = template["@id"]
     p_id = performer["@id"]
     m_id = regarding_measure(performer)
+    c_id = regarding_comparator(performer)
 
     candidate = template.merge performer
     candidate["@type"] = CANDIDATE_IRI
-    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}")
+    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
     candidate[ANCESTOR_TEMPLATE_IRI]  = t_id
 
