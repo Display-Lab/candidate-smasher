@@ -1,21 +1,11 @@
 require "rdf"
 require "json/ld"
 require "digest"
+require_relative 'candidate_smasher_constants'
 
 class CandidateSmasher
-  ID_PREFIX              = "_:c"
-  SPEK_IRI               = "http://example.com/slowmo#spek"
-  HAS_PERFORMER_IRI      = "http://example.com/slowmo#IsAboutPerformer"
-  ABOUT_TEMPLATE_IRI     = "http://example.com/slowmo#IsAboutTemplate"
-  USES_ISR_IRI           = "http://example.com/slowmo#IsAboutCausalPathway"
-  ANCESTOR_PERFORMER_IRI = "http://example.com/slowmo#AncestorPerformer"
-  ANCESTOR_TEMPLATE_IRI  = "http://example.com/slowmo#AncestorTemplate"
-  CANDIDATE_IRI          = "http://purl.obolibrary.org/obo/cpo_0000053"
-  HAS_CANDIDATE_IRI      = "http://example.com/slowmo#HasCandidate"
-  TEMPLATE_CLASS_IRI     = "http://purl.obolibrary.org/obo/psdo_0000002"
-  REGARDING_MEASURE      = "http://example.com/slowmo#RegardingMeasure"
-  ABOUT_MEASURE_IRI      = "http://example.com/slowmo#IsAboutMeasure"
-  HAS_DISPOSITION_IRI    = "http://purl.obolibrary.org/obo/RO_0000091"
+
+  include CandidateSmasherConstants
 
   attr_accessor :spek_hsh, :template_lib
   
@@ -87,31 +77,40 @@ class CandidateSmasher
     end
   end
 
-  # Create array of performers containing only dispositions related to a single measure
-  def split_by_measure(performer)
+  def split_by_disposition_attr(performer, attr_uri)
     dispositions = performer[HAS_DISPOSITION_IRI]
     return [performer] if dispositions.nil?
 
-    unique_measures = dispositions.map{|d| d[REGARDING_MEASURE]}.uniq
-    performer_measures = unique_measures.map do |measure|
+    uniques = dispositions.map{|d| d[attr_uri]}.uniq
+    splits = uniques.map do |attr|
       p = performer.dup
       p[HAS_DISPOSITION_IRI] = dispositions.select do |d|
-        d[REGARDING_MEASURE] == measure
+        d[attr_uri] == attr
       end
       p
     end
-    return performer_measures
+    return splits
+  end
+
+  def split_by_measure(performer)
+    split_by_disposition_attr(performer, REGARDING_MEASURE)
+  end
+
+  def split_by_comparator(performer)
+    split_by_disposition_attr(performer, REGARDING_COMPARATOR)
   end
 
   def generate_candidates
     performers = @spek_hsh[HAS_PERFORMER_IRI] || Array.new
-    performers_split = performers.map{|p| split_by_measure(p)}.flatten(1)
+    # Split by measure then by comparator
+    pm_split = performers.map{|p| split_by_measure(p)}.flatten(1)
+    pmc_split = pm_split.map{|pm| split_by_comparator(pm)}.flatten(1)
 
     spec_templates = @spek_hsh[ABOUT_TEMPLATE_IRI] || Array.new
     rdf_templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
     templates = templates_rdf_to_json rdf_templates
 
-    res = performers_split.collect do |p|
+    res = pmc_split.collect do |p|
       templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
     end
     res.flatten
@@ -124,24 +123,35 @@ class CandidateSmasher
   end
 
   # Get the first measure from the dispositions
-  #   Hack to help make uniqu ids after split by measure 
+  #   Hack to help make unique ids after split by measure 
   def self.regarding_measure(split_performer)
     dispositions = split_performer[HAS_DISPOSITION_IRI]
     if dispositions.nil? || dispositions.empty?
       return ""
     end
     disp = dispositions.first
-    disp.dig(REGARDING_MEASURE,"@id")
+    disp.dig(REGARDING_MEASURE,"@id") || ""
+  end
+
+  # Hack to help make unique ids after split by comparator 
+  def self.regarding_comparator(split_performer)
+    dispositions = split_performer[HAS_DISPOSITION_IRI]
+    if dispositions.nil? || dispositions.empty?
+      return ""
+    end
+    disp = dispositions.first
+    disp.dig(REGARDING_COMPARATOR,"@id") || ""
   end
 
   def self.make_candidate(template, performer)
     t_id = template["@id"]
     p_id = performer["@id"]
     m_id = regarding_measure(performer)
+    c_id = regarding_comparator(performer)
 
     candidate = template.merge performer
     candidate["@type"] = CANDIDATE_IRI
-    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}")
+    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
     candidate[ANCESTOR_TEMPLATE_IRI]  = t_id
 
