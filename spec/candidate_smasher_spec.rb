@@ -62,24 +62,6 @@ RSpec.describe CandidateSmasher do
           CSC::USES_ISR_IRI => [] }
   end
 
-  let(:ext_template_content) do
-    {
-      "@graph" => [
-      {
-        "@id"   => "https://inferences.es/app/onto#TPLT001",
-        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name"  => "t1",
-        "performer_cardinality" => 2
-      },
-      {
-        "@id" => "https://inferences.es/app/onto#TPLT002",
-        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name" => "t2",
-        "performer_cardinality" => 1
-      } ]
-    }
-  end
-  
   let(:smasher_empty) { CandidateSmasher.new '{}' }
 
   let(:smasher_blank) do
@@ -106,14 +88,6 @@ RSpec.describe CandidateSmasher do
 
     c
   end
-
-  let(:smasher_ext_tmpl) do
-    c = CandidateSmasher.new 
-    c.spek_hsh = base_content
-    c.template_lib = json_to_graph(ext_template_content.to_json)
-    c
-  end
-
 
   describe "#initialize" do
     it "defaults to empty hash on bad json" do
@@ -157,14 +131,6 @@ RSpec.describe CandidateSmasher do
       smasher_blank.spek_hsh.delete("@type")
       expect(smasher_blank.list_missing.length == 3)
     end
-  end
-
-  # TODO: exicise
-  describe "#load_ext_templates" do
-  end
-
-  # TODO: exicise
-  describe "#merge_ext_templates" do
   end
 
   describe "#make_candidate" do
@@ -241,9 +207,9 @@ RSpec.describe CandidateSmasher do
       end
     end
 
-    context "with template metadata" do
+    context "with base content" do
       it "returns pavers with dispositions" do
-        result = smasher_ext_tmpl.smash!
+        result = smasher_base.smash!
         candidates = JSON.parse(result)[CSC::HAS_PAVER_IRI]
         expect( candidates.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI} )
       end

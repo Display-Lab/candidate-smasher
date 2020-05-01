@@ -39,13 +39,9 @@ RSpec.describe CanSmashCLI do
 
   context "integration test" do
     let(:path_to_spek) {File.join(FIXTURE_DIR, 'spek.json')}
-    let(:path_to_tmpl) {File.join(FIXTURE_DIR, 'templates-metadata.json')}
 
     it "output expected number of candidates with performer disposition" do
-      subject.options = {
-        path: path_to_spek, 
-        md_source: path_to_tmpl
-      }
+      subject.options = { path: path_to_spek }
 
       # Capture CLI output
       output = capture_stdout do

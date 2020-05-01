@@ -5,7 +5,6 @@ require_relative "candidate_smasher"
  
 class CanSmashCLI < Thor
   class_option :path, :type => :string, :banner => "path to spek file."
-  class_option :md_source, :type => :string, :banner => "URI to template metadata source."
 
   default_task :generate
 
@@ -22,9 +21,7 @@ class CanSmashCLI < Thor
       exit(1)
     end
 
-    #metadata = read_metadata md_source
-
-    cs = CandidateSmasher.new(content, md_source)
+    cs = CandidateSmasher.new(content)
     if cs.valid?
       puts cs.smash!
     else
@@ -44,7 +41,4 @@ class CanSmashCLI < Thor
     end
   end
 
-  def read_metadata(source)
-    #TODO: Implment external md source merge
-  end
 end

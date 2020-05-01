@@ -7,16 +7,15 @@ class CandidateSmasher
 
   include CandidateSmasherConstants
 
-  attr_accessor :spek_hsh, :template_lib
+  attr_accessor :spek_hsh
   
-  def initialize(input_string="{}", templates_src=nil)
+  def initialize(input_string="{}")
     begin
       @spek_hsh = JSON.parse input_string
     rescue JSON::ParserError
       @spek_hsh = Hash.new
     end
 
-    @template_lib = load_ext_templates templates_src
   end
 
   def valid?
@@ -25,53 +24,13 @@ class CandidateSmasher
 
   def checks
     {"@type": @spek_hsh["@type"] == SPEK_IRI, 
-     "#{HAS_PERFORMER_IRI}": @spek_hsh.has_key?(HAS_PERFORMER_IRI), 
-     "#{ABOUT_TEMPLATE_IRI}": !@template_lib.empty? || @spek_hsh.has_key?(ABOUT_TEMPLATE_IRI)}
+     "#{HAS_PERFORMER_IRI}": @spek_hsh.has_key?(HAS_PERFORMER_IRI)} 
   end
 
   def list_missing
     checks().select{|k,v| !v}.keys
   end
 
-  def load_ext_templates(templates_src)
-    RDF::Graph.new
-  end
-
-  # Given JSON templates from spec, merge graph of statements from external templates library
-  def self.merge_external_templates(spec_templates, ext_templates)
-    template_ids = spec_templates.collect { |t| RDF::URI t['@id'] }
-
-    statements = template_ids.collect do |id|
-      RDF::Statement.new(id, RDF.type, RDF::URI(TEMPLATE_CLASS_IRI) )
-    end
-
-    template_ids.each do |id|
-      query = RDF::Query.new { pattern [id, :pred, :obj] }
-
-      solutions = query.execute ext_templates
-      solutions.each do |solution|
-        statements << RDF::Statement.new(id, solution.pred, solution.obj) 
-      end
-    end
-    
-    g = RDF::Graph.new
-    g.insert_statements statements
-    g
-  end
-
-  # interrim hack until everything is RDF from the get go
-  def templates_rdf_to_json(graph)
-    ld_tmpl = JSON::LD::API.fromRdf(graph).compact
-    ld_tmpl.each do |template|
-      template.transform_values! do |v|
-        if(v.respond_to?(:first) && v.length == 1)
-          v.first
-        else
-          v
-        end
-      end
-    end
-  end
 
   def split_by_disposition_attr(performer, attr_uri)
     dispositions = performer[HAS_DISPOSITION_IRI]
