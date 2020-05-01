@@ -177,9 +177,9 @@ RSpec.describe CandidateSmasher do
       expect(c["@id"]).to match(/^#{prefix}[a-f0-9]{32}$/)
     end
     
-    it "assigns the candidate type" do
+    it "assigns the paver type" do
       c = CandidateSmasher.make_candidate( performer )
-      expect(c["@type"]).to eq(CSC::CANDIDATE_IRI)
+      expect(c["@type"]).to eq(CSC::PAVER_IRI)
     end
 
     it "retains ancestor id" do
@@ -228,9 +228,9 @@ RSpec.describe CandidateSmasher do
 
   describe "#smash!" do
     context "with empty content" do
-      it "adds candidates to the spek" do
+      it "adds pavers to the spek" do
         smasher_empty.smash!
-        expect(smasher_empty.spek_hsh.has_key?(CSC::HAS_CANDIDATE_IRI)).to be(true)
+        expect(smasher_empty.spek_hsh.has_key?(CSC::HAS_PAVER_IRI)).to be(true)
       end
 
       it "returns json" do
@@ -242,17 +242,17 @@ RSpec.describe CandidateSmasher do
     end
 
     context "with template metadata" do
-      it "returns candidates with attributes of performer and template" do
+      it "returns pavers with dispositions" do
         result = smasher_ext_tmpl.smash!
-        candidates = JSON.parse(result)[CSC::HAS_CANDIDATE_IRI]
+        candidates = JSON.parse(result)[CSC::HAS_PAVER_IRI]
         expect( candidates.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI} )
       end
     end
 
     context "with multiple content" do
-      it "adds candidates to the spek" do
+      it "adds pavers to the spek" do
         smasher_base.smash!
-        expect(smasher_base.spek_hsh.has_key?(CSC::HAS_CANDIDATE_IRI)).to be(true)
+        expect(smasher_base.spek_hsh.has_key?(CSC::HAS_PAVER_IRI)).to be(true)
       end
 
       it "is idempotent" do

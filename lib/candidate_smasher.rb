@@ -110,8 +110,8 @@ class CandidateSmasher
   end
 
   def smash!
-    candidates = generate_candidates
-    @spek_hsh[HAS_CANDIDATE_IRI] = candidates
+    pavers = generate_candidates
+    @spek_hsh[HAS_PAVER_IRI] = pavers
     JSON.dump(@spek_hsh)
   end
 
@@ -143,7 +143,7 @@ class CandidateSmasher
     c_id = regarding_comparator(split_performer)
 
     candidate = split_performer.slice(HAS_DISPOSITION_IRI)
-    candidate["@type"] = CANDIDATE_IRI
+    candidate["@type"] = PAVER_IRI
     candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
 

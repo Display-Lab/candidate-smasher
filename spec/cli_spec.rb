@@ -68,7 +68,7 @@ RSpec.describe CanSmashCLI do
 
       # Count the number of output candidates that include 'has disposition'
       out_hsh = JSON.parse output
-      candidates = out_hsh[CSC::HAS_CANDIDATE_IRI]
+      candidates = out_hsh[CSC::HAS_PAVER_IRI]
 
       expect(candidates.length).to eq(n_expected)
     end
