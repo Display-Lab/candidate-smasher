@@ -119,11 +119,6 @@ RSpec.describe CandidateSmasher do
     it "defaults to empty hash on bad json" do
       expect(smasher_empty.spek_hsh).to eq({})
     end
-
-    it "defaults to empty template graph" do
-      expect(smasher_empty.template_lib.empty?).to be true
-    end
-
   end
 
   describe "#valid?" do
@@ -149,17 +144,6 @@ RSpec.describe CandidateSmasher do
         expect(smasher_blank.valid?).to be(false)
       end
 
-      it "requires spek to have templates" do
-        smasher_blank.spek_hsh.delete(CSC::ABOUT_TEMPLATE_IRI)
-        expect(smasher_blank.valid?).to be(false)
-      end
-
-      it "allows external templates as substitute for spek templates" do
-        smasher_blank.spek_hsh.delete(CSC::ABOUT_TEMPLATE_IRI)
-        smasher_blank.template_lib = {foo_iri: "ex", bar_iri: "ex"}
-        expect(smasher_blank.valid?).to be(true)
-      end
-
       it "is valid when required attributes are present" do
         expect(smasher_blank.valid?).to be(true)
       end
@@ -175,70 +159,32 @@ RSpec.describe CandidateSmasher do
     end
   end
 
+  # TODO: exicise
   describe "#load_ext_templates" do
-    context"with no external template metadata" do
-      it "returns empty graph" do
-        result = smasher_blank.load_ext_templates(nil)
-        expect(result).to be_instance_of(RDF::Graph).and be_empty
-      end
-    end
-
-    context"using external template metadata" do
-      it "returns loads the graph" do
-        fixture_file = 'spec/fixtures/templates-metadata.json'
-        result = smasher_blank.load_ext_templates(fixture_file)
-
-        expect(result).to be_instance_of(RDF::Graph)
-        expect(result).not_to be_empty
-      end
-    end
-
   end
 
+  # TODO: exicise
   describe "#merge_ext_templates" do
-    context "given three ids" do
-      it "returns one template per id provided" do
-        in_templates = [{'@id' => 'http://example.com/foo'},
-                        {'@id' => 'http://example.com/bar'},
-                        {'@id' => 'http://example.com/baz'}]
-        external_templates = RDF::Graph.new
-        result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
-        expect(result.subjects.count).to eq(3)
-      end
-    end
-
-    context "given no ids" do
-      it "returns an empty graph" do
-        in_templates = Array.new
-        external_templates = RDF::Graph.new
-        result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
-        expect(result).to be_instance_of(RDF::Graph)
-        expect(result.subjects.count).to eq(0)
-      end
-    end
   end
 
   describe "#make_candidate" do
     let(:performer) { {"@id" => "http://example.com/P1",
                        "name" => "foo" } }
-    let(:template) { {"@id" => "http://example.com/T1",
-                       "colors" => "4" } }
 
     it "assigns a random id using application prefix and hash" do
-      c = CandidateSmasher.make_candidate( template, performer )
+      c = CandidateSmasher.make_candidate( performer )
       prefix = CSC::ID_PREFIX
       expect(c["@id"]).to match(/^#{prefix}[a-f0-9]{32}$/)
     end
     
     it "assigns the candidate type" do
-      c = CandidateSmasher.make_candidate( template, performer )
+      c = CandidateSmasher.make_candidate( performer )
       expect(c["@type"]).to eq(CSC::CANDIDATE_IRI)
     end
 
-    it "retains ancestor ids" do
-      c = CandidateSmasher.make_candidate( template, performer )
+    it "retains ancestor id" do
+      c = CandidateSmasher.make_candidate( performer )
       expect(c[CSC::ANCESTOR_PERFORMER_IRI]).to eq(performer["@id"])
-      expect(c[CSC::ANCESTOR_TEMPLATE_IRI]).to eq(template["@id"])
     end
 
   end
@@ -259,35 +205,23 @@ RSpec.describe CandidateSmasher do
       end
 
       it "has expected number of candidates when no comparators specified." do
-        # is num of templates x num of performer-measure-comparators
-        num_templates = smasher_base.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].length
-
+        # is num of performer-measure-comparators
         performers = smasher_base.spek_hsh[CSC::HAS_PERFORMER_IRI]
         pmc_total = count_disposition_groups(performers)
-        expected_candidate_count = num_templates * pmc_total
+        expected_candidate_count = pmc_total
 
         cands = smasher_base.generate_candidates
         expect(cands.length).to eq(expected_candidate_count)
       end
 
       it "has expecte number of candidates when comparators present." do
-        smasher_comps
-
-        num_templates = smasher_comps.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].length
-
+        # is num of performer-measure-comparators
         performers = smasher_comps.spek_hsh[CSC::HAS_PERFORMER_IRI]
         pmc_total = count_disposition_groups(performers)
-        expected_candidate_count = num_templates * pmc_total
+        expected_candidate_count = pmc_total
 
         cands = smasher_comps.generate_candidates
         expect(cands.length).to eq(expected_candidate_count)
-      end
-    end
-
-    context "with external templates" do
-      it "returns candidates with attributes of performer and template" do
-        cands = smasher_ext_tmpl.generate_candidates
-        expect( cands.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI } )
       end
     end
   end

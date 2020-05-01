@@ -34,11 +34,7 @@ class CandidateSmasher
   end
 
   def load_ext_templates(templates_src)
-    if templates_src.nil?
-      RDF::Graph.new
-    else
-      RDF::Graph.load(templates_src)
-    end
+    RDF::Graph.new
   end
 
   # Given JSON templates from spec, merge graph of statements from external templates library
@@ -106,12 +102,9 @@ class CandidateSmasher
     pm_split = performers.map{|p| split_by_measure(p)}.flatten(1)
     pmc_split = pm_split.map{|pm| split_by_comparator(pm)}.flatten(1)
 
-    spec_templates = @spek_hsh[ABOUT_TEMPLATE_IRI] || Array.new
-    rdf_templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
-    templates = templates_rdf_to_json rdf_templates
 
     res = pmc_split.collect do |p|
-      templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
+      CandidateSmasher.make_candidate(p) 
     end
     res.flatten
   end
@@ -143,17 +136,16 @@ class CandidateSmasher
     disp.dig(REGARDING_COMPARATOR,"@id") || ""
   end
 
-  def self.make_candidate(template, performer)
-    t_id = template["@id"]
-    p_id = performer["@id"]
-    m_id = regarding_measure(performer)
-    c_id = regarding_comparator(performer)
+  # split performer is one with only relevant dispositions present
+  def self.make_candidate(split_performer)
+    p_id = split_performer["@id"]
+    m_id = regarding_measure(split_performer)
+    c_id = regarding_comparator(split_performer)
 
-    candidate = template.merge performer
+    candidate = split_performer.slice(HAS_DISPOSITION_IRI)
     candidate["@type"] = CANDIDATE_IRI
-    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}#{c_id}")
+    candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
-    candidate[ANCESTOR_TEMPLATE_IRI]  = t_id
 
     return(candidate)
   end

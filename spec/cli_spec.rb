@@ -52,18 +52,19 @@ RSpec.describe CanSmashCLI do
         subject.generate
       end
 
-      # Number of candidates is performer-measures * templates
+      # Number of candidates is performer-measures-comparators
       spek = JSON.parse(File.read(path_to_spek))
       performers = spek[CSC::HAS_PERFORMER_IRI]
 
       # How many unique measures does each performer have a disposition about?
       perf_measures = performers.map do |perf|
-        perf[CSC::HAS_DISPOSITION_IRI]&.map{|d| measure = d[CSC::REGARDING_MEASURE]["@id"]}&.uniq
+        disps = perf[CSC::HAS_DISPOSITION_IRI]
+        measures = disps&.map{|d| measure = d[CSC::REGARDING_MEASURE]["@id"] }
+        measures&.uniq
       end
 
       n_perf_measures = perf_measures.flatten.length
-      n_templates = spek[CSC::ABOUT_TEMPLATE_IRI].count
-      n_expected = n_perf_measures * n_templates
+      n_expected = n_perf_measures
 
       # Count the number of output candidates that include 'has disposition'
       out_hsh = JSON.parse output
