@@ -47,4 +47,8 @@ class CanSmashCLI < Thor
   def read_metadata(source)
     #TODO: Implment external md source merge
   end
+
+  def self.exit_on_failure?
+    true
+  end
 end
