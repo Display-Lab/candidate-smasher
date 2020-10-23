@@ -65,18 +65,33 @@ RSpec.describe CandidateSmasher do
   let(:ext_template_content) do
     {
       "@graph" => [
-      {
-        "@id"   => "https://inferences.es/app/onto#TPLT001",
-        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name"  => "t1",
-        "performer_cardinality" => 2
-      },
-      {
-        "@id" => "https://inferences.es/app/onto#TPLT002",
-        "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-        "name" => "t2",
-        "performer_cardinality" => 1
-      } ]
+        {
+          "@id"   => "https://inferences.es/app/onto#TPLT001",
+          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+          CSC::IS_ABOUT => [
+            {"@type": "http://purl.obolibrary.org/obo/psdo_0000117"},
+            {"@type": "http://purl.obolibrary.org/obo/psdo_0000045"},
+            {"@type": "http://purl.obolibrary.org/obo/psdo_0000041"}
+          ]
+        },
+        {
+          "@id" => "https://inferences.es/app/onto#TPLT002",
+          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+          CSC::IS_ABOUT => [
+            {"@type": "http://example.com/foo"},
+            {"@type": "http://example.com/bar"}
+          ]
+        },
+        {
+          "@id" => "https://inferences.es/app/onto#TPLT003",
+          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+          CSC::IS_ABOUT => [ {"@type": "http://example.com/foo"} ]
+        }, 
+        {
+          "@id" => "https://inferences.es/app/onto#TPLT004",
+          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
+        } 
+      ]
     }
   end
   
@@ -216,6 +231,18 @@ RSpec.describe CandidateSmasher do
         expect(result.subjects.count).to eq(0)
       end
     end
+
+    #TODO implement test that checks external triples are included.
+    it "merges tripples from external templates" do
+      skip "defining what result should look like"
+
+    end
+
+    it "only takes given ids from external templates" do
+      skip "defining what result should look like"
+
+    end
+
   end
 
   describe "#make_candidate" do
@@ -288,6 +315,14 @@ RSpec.describe CandidateSmasher do
       it "returns candidates with attributes of performer and template" do
         cands = smasher_ext_tmpl.generate_candidates
         expect( cands.all?{|c| c.has_key? CSC::HAS_DISPOSITION_IRI } )
+      end
+
+      it "returns only candidates in spek " do
+        cands = smasher_ext_tmpl.generate_candidates
+        ancestor_template_ids = cands.map{|c| c[CSC::ANCESTOR_TEMPLATE_IRI]}.uniq
+        spek_template_ids = smasher_ext_tmpl.spek_hsh[CSC::ABOUT_TEMPLATE_IRI].map{|t| t["@id"]}.uniq
+
+        expect(ancestor_template_ids).to match_array spek_template_ids
       end
     end
   end
