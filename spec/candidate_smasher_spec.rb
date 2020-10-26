@@ -192,18 +192,18 @@ RSpec.describe CandidateSmasher do
 
   describe "#load_ext_templates" do
     context"with no external template metadata" do
-      it "returns empty graph" do
+      it "returns empty hash" do
         result = smasher_blank.load_ext_templates(nil)
-        expect(result).to be_instance_of(RDF::Graph).and be_empty
+        expect(result).to be_instance_of(Hash).and be_empty
       end
     end
 
     context"using external template metadata" do
-      it "returns loads the graph" do
+      it "returns hash representation" do
         fixture_file = 'spec/fixtures/templates-metadata.json'
         result = smasher_blank.load_ext_templates(fixture_file)
 
-        expect(result).to be_instance_of(RDF::Graph)
+        expect(result).to be_instance_of(Hash)
         expect(result).not_to be_empty
       end
     end
@@ -216,19 +216,19 @@ RSpec.describe CandidateSmasher do
         in_templates = [{'@id' => 'http://example.com/foo'},
                         {'@id' => 'http://example.com/bar'},
                         {'@id' => 'http://example.com/baz'}]
-        external_templates = RDF::Graph.new
+        external_templates = {}
         result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
-        expect(result.subjects.count).to eq(3)
+        expect(result.length).to eq(3)
       end
     end
 
     context "given no ids" do
-      it "returns an empty graph" do
+      it "returns an empty array" do
         in_templates = Array.new
         external_templates = RDF::Graph.new
         result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
-        expect(result).to be_instance_of(RDF::Graph)
-        expect(result.subjects.count).to eq(0)
+        expect(result).to be_instance_of(Array)
+        expect(result.length).to eq(0)
       end
     end
 
