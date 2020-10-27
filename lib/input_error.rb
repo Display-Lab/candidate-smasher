@@ -1,3 +1,0 @@
-class InputError < StandardError
-
-end

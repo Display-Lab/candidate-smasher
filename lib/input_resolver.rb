@@ -1,5 +1,3 @@
-require_relative "input_error"
-
 class InputResolver
   def self.resolve(path)
     if(path.nil?)
@@ -9,5 +7,9 @@ class InputResolver
     else
       raise InputError.new("Bad input path")
     end
+  end
+
+  class InputError < StandardError
+
   end
 end

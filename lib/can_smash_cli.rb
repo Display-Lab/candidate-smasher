@@ -1,6 +1,5 @@
 require "thor"
 require "pry"
-require_relative "input_error"
 require_relative "candidate_smasher"
 require_relative "input_resolver"
  
@@ -18,7 +17,7 @@ class CanSmashCLI < Thor
     begin
       input = InputResolver.resolve path
       content = input.read
-    rescue InputError => myex
+    rescue InputResolver::InputError => myex
       STDERR.puts(myex)
       exit(1)
     end
