@@ -69,17 +69,17 @@ RSpec.describe CandidateSmasher do
           "@id"   => "https://inferences.es/app/onto#TPLT001",
           "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
           CSC::IS_ABOUT => [
-            {"@type": "http://purl.obolibrary.org/obo/psdo_0000117"},
-            {"@type": "http://purl.obolibrary.org/obo/psdo_0000045"},
-            {"@type": "http://purl.obolibrary.org/obo/psdo_0000041"}
+            {"@type" => "http://purl.obolibrary.org/obo/psdo_0000117"},
+            {"@type" => "http://purl.obolibrary.org/obo/psdo_0000045"},
+            {"@type" => "http://purl.obolibrary.org/obo/psdo_0000041"}
           ]
         },
         {
           "@id" => "https://inferences.es/app/onto#TPLT002",
           "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
           CSC::IS_ABOUT => [
-            {"@type": "http://example.com/foo"},
-            {"@type": "http://example.com/bar"}
+            {"@type" => "http://example.com/foo"},
+            {"@type" => "http://example.com/bar"}
           ]
         },
         {
@@ -212,7 +212,7 @@ RSpec.describe CandidateSmasher do
 
   describe "#merge_ext_templates" do
     context "given three ids" do
-      it "returns one template per id provided" do
+      it "returns one template per id provided in spek" do
         in_templates = [{'@id' => 'http://example.com/foo'},
                         {'@id' => 'http://example.com/bar'},
                         {'@id' => 'http://example.com/baz'}]
@@ -225,22 +225,27 @@ RSpec.describe CandidateSmasher do
     context "given no ids" do
       it "returns an empty array" do
         in_templates = Array.new
-        external_templates = RDF::Graph.new
+        external_templates = Hash.new
         result = CandidateSmasher.merge_external_templates( in_templates, external_templates )
         expect(result).to be_instance_of(Array)
         expect(result.length).to eq(0)
       end
     end
 
-    #TODO implement test that checks external triples are included.
     it "merges tripples from external templates" do
-      skip "defining what result should look like"
+      spek_templates = base_content[CSC::ABOUT_TEMPLATE_IRI]
+      external_templates = ext_template_content['@graph']
 
-    end
+      result = CandidateSmasher.merge_external_templates(spek_templates, external_templates)
 
-    it "only takes given ids from external templates" do
-      skip "defining what result should look like"
+      external_attrs = external_templates.reduce(Hash.new) do |acc, t|
+        acc[t['@id']] = t[CSC::IS_ABOUT]
+        acc
+      end
 
+      result.each do |t|
+        expect(t[CSC::IS_ABOUT]).to match_array external_attrs[t['@id']]
+      end
     end
 
   end

@@ -52,7 +52,7 @@ class CandidateSmasher
   # Given JSON templates from spec, merge graph of statements from external templates library
   def self.merge_external_templates(spec_templates, ext_templates)
     t_ids = spec_templates.map{|t| t['@id']}
-
+    
     # For every template in spec, lookup from external and merge info.
     merged = spec_templates.map do |t|
       new_t = ext_templates.select{|e| e['@id'] == t['@id']}.first || {}
