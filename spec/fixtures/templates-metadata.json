@@ -10,7 +10,7 @@
   "@graph":[
     {
       "@id": "https://inferences.es/app/onto#TPLT001",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t1",
       "uses_intervention_property":[ "NormativeComparator"],
       "performer_cardinality": 2,
@@ -18,7 +18,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT002",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t2",
       "uses_intervention_property":[ "PreventionFraming"],
       "performer_cardinality": 1,
@@ -26,7 +26,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT003",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t3",
       "uses_intervention_property":[ "PromotionFraming"],
       "performer_cardinality": 1,
@@ -34,7 +34,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT004",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t4",
       "uses_intervention_property":[ ],
       "performer_cardinality": 2,
@@ -43,7 +43,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT005",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t5",
       "uses_intervention_property":[ ],
       "performer_cardinality": 1,
@@ -51,7 +51,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT006",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t6",
       "uses_intervention_property":[ "PreventionFraming"],
       "performer_cardinality": 3,
@@ -59,7 +59,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLT007",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "t7",
       "uses_intervention_property":[ "PreventionFraming"],
       "performer_cardinality": 1,
@@ -67,7 +67,7 @@
     },
     {
       "@id": "https://inferences.es/app/onto#TPLTBlank",
-      "@type": "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
+      "@type": "http://purl.obolibrary.org/obo/psdo_0000002",
       "name": "tblank" 
     }
   ]

@@ -35,32 +35,41 @@ class CandidateSmasher
 
   def load_ext_templates(templates_src)
     if templates_src.nil?
+      content = Hash.new
+    else
+      content = File.open(templates_src){|file| JSON.load file}
+    end
+
+    content = content['@graph'] unless content['@graph'].nil?
+    return Array(content)
+  end
+
+  def load_ext_templates_rdf(templates_src)
+    if templates_src.nil?
       RDF::Graph.new
     else
       RDF::Graph.load(templates_src)
     end
   end
 
-  # Given JSON templates from spec, merge graph of statements from external templates library
   def self.merge_external_templates(spec_templates, ext_templates)
-    template_ids = spec_templates.collect { |t| RDF::URI t['@id'] }
+    t_ids = spec_templates.map{|t| t['@id']}
+    
+    # For every template in spec, lookup from external and merge info.
+    merged = spec_templates.map do |t|
+      new_t = ext_templates.select{|e| e['@id'] == t['@id']}.first || {}
 
-    statements = template_ids.collect do |id|
-      RDF::Statement.new(id, RDF.type, RDF::URI(TEMPLATE_CLASS_IRI) )
-    end
-
-    template_ids.each do |id|
-      query = RDF::Query.new { pattern [id, :pred, :obj] }
-
-      solutions = query.execute ext_templates
-      solutions.each do |solution|
-        statements << RDF::Statement.new(id, solution.pred, solution.obj) 
+      new_t.merge(t) do |key, ext_val, spek_val|
+        if spek_val.is_a?(Array) || ext_val.is_a?(Array)
+          result = Array(spek_val) + Array(ext_val)
+          result.uniq
+        else
+          spek_val
+        end
       end
     end
-    
-    g = RDF::Graph.new
-    g.insert_statements statements
-    g
+
+    merged
   end
 
   # interrim hack until everything is RDF from the get go
@@ -107,8 +116,7 @@ class CandidateSmasher
     pmc_split = pm_split.map{|pm| split_by_comparator(pm)}.flatten(1)
 
     spec_templates = @spek_hsh[ABOUT_TEMPLATE_IRI] || Array.new
-    rdf_templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
-    templates = templates_rdf_to_json rdf_templates
+    templates = CandidateSmasher.merge_external_templates(spec_templates, @template_lib) 
 
     res = pmc_split.collect do |p|
       templates.collect{|t| CandidateSmasher.make_candidate(t,p) }
@@ -150,6 +158,13 @@ class CandidateSmasher
     c_id = regarding_comparator(performer)
 
     candidate = template.merge performer
+    # interrim hack to handle HasDisposition to IsAbout transition
+    unless(candidate['IAO-IsAbout'].nil? && candidate[IS_ABOUT_IRI].nil?)
+      abouts = candidate['IAO-IsAbout'] || candidate[IS_ABOUT_IRI] 
+      candidate.delete('IAO-IsAbout')
+      candidate.delete(IS_ABOUT_IRI)
+      candidate[HAS_DISPOSITION_IRI] = candidate[HAS_DISPOSITION_IRI] + Array(abouts) 
+    end
     candidate["@type"] = CANDIDATE_IRI
     candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id
