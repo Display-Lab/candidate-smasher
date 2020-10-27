@@ -35,10 +35,13 @@ class CandidateSmasher
 
   def load_ext_templates(templates_src)
     if templates_src.nil?
-      Hash.new
+      content = Hash.new
     else
-      File.open(templates_src){|file| JSON.load file}
+      content = File.open(templates_src){|file| JSON.load file}
     end
+
+    content = content['@graph'] unless content['@graph'].nil?
+    return Array(content)
   end
 
   def load_ext_templates_rdf(templates_src)
@@ -49,7 +52,6 @@ class CandidateSmasher
     end
   end
 
-  # Given JSON templates from spec, merge graph of statements from external templates library
   def self.merge_external_templates(spec_templates, ext_templates)
     t_ids = spec_templates.map{|t| t['@id']}
     
@@ -156,6 +158,13 @@ class CandidateSmasher
     c_id = regarding_comparator(performer)
 
     candidate = template.merge performer
+    # interrim hack to handle HasDisposition to IsAbout transition
+    unless(candidate['IAO-IsAbout'].nil? && candidate[IS_ABOUT_IRI].nil?)
+      abouts = candidate['IAO-IsAbout'] || candidate[IS_ABOUT_IRI] 
+      candidate.delete('IAO-IsAbout')
+      candidate.delete(IS_ABOUT_IRI)
+      candidate[HAS_DISPOSITION_IRI] = candidate[HAS_DISPOSITION_IRI] + Array(abouts) 
+    end
     candidate["@type"] = CANDIDATE_IRI
     candidate["@id"] = ID_PREFIX + Digest::MD5.hexdigest("#{t_id}#{p_id}#{m_id}#{c_id}")
     candidate[ANCESTOR_PERFORMER_IRI] = p_id

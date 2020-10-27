@@ -13,5 +13,5 @@ module CandidateSmasherConstants
   CANDIDATE_IRI          = "http://purl.obolibrary.org/obo/cpo_0000053"
   TEMPLATE_CLASS_IRI     = "http://purl.obolibrary.org/obo/psdo_0000002"
   HAS_DISPOSITION_IRI    = "http://purl.obolibrary.org/obo/RO_0000091"
-  IS_ABOUT               = "http://purl.obolibrary.org/obo/IAO_0000136"
+  IS_ABOUT_IRI           = "http://purl.obolibrary.org/obo/IAO_0000136"
 end

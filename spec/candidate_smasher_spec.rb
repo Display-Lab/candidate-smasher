@@ -67,8 +67,8 @@ RSpec.describe CandidateSmasher do
       "@graph" => [
         {
           "@id"   => "https://inferences.es/app/onto#TPLT001",
-          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-          CSC::IS_ABOUT => [
+          "@type" => "http://purl.obolibrary.org/obo/psdo_0000002",
+          CSC::IS_ABOUT_IRI => [
             {"@type" => "http://purl.obolibrary.org/obo/psdo_0000117"},
             {"@type" => "http://purl.obolibrary.org/obo/psdo_0000045"},
             {"@type" => "http://purl.obolibrary.org/obo/psdo_0000041"}
@@ -76,20 +76,20 @@ RSpec.describe CandidateSmasher do
         },
         {
           "@id" => "https://inferences.es/app/onto#TPLT002",
-          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-          CSC::IS_ABOUT => [
+          "@type" => "http://purl.obolibrary.org/obo/psdo_0000002",
+          CSC::IS_ABOUT_IRI => [
             {"@type" => "http://example.com/foo"},
             {"@type" => "http://example.com/bar"}
           ]
         },
         {
           "@id" => "https://inferences.es/app/onto#TPLT003",
-          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002",
-          CSC::IS_ABOUT => [ {"@type": "http://example.com/foo"} ]
+          "@type" => "http://purl.obolibrary.org/obo/psdo_0000002",
+          CSC::IS_ABOUT_IRI => [ {"@type": "http://example.com/foo"} ]
         }, 
         {
           "@id" => "https://inferences.es/app/onto#TPLT004",
-          "@type" => "http://purl.obolibrary.org/obo/psdo#psdo_0000002"
+          "@type" => "http://purl.obolibrary.org/obo/psdo_0000002"
         } 
       ]
     }
@@ -192,19 +192,20 @@ RSpec.describe CandidateSmasher do
 
   describe "#load_ext_templates" do
     context"with no external template metadata" do
-      it "returns empty hash" do
+      it "returns empty array" do
         result = smasher_blank.load_ext_templates(nil)
-        expect(result).to be_instance_of(Hash).and be_empty
+        expect(result).to be_instance_of(Array).and be_empty
       end
     end
 
     context"using external template metadata" do
-      it "returns hash representation" do
+      it "returns array of templates" do
         fixture_file = 'spec/fixtures/templates-metadata.json'
         result = smasher_blank.load_ext_templates(fixture_file)
 
-        expect(result).to be_instance_of(Hash)
+        expect(result).to be_instance_of(Array)
         expect(result).not_to be_empty
+        result.each{|t| expect(t['@type']).to eq(CSC::TEMPLATE_CLASS_IRI)}
       end
     end
 
@@ -239,12 +240,12 @@ RSpec.describe CandidateSmasher do
       result = CandidateSmasher.merge_external_templates(spek_templates, external_templates)
 
       external_attrs = external_templates.reduce(Hash.new) do |acc, t|
-        acc[t['@id']] = t[CSC::IS_ABOUT]
+        acc[t['@id']] = t[CSC::IS_ABOUT_IRI]
         acc
       end
 
       result.each do |t|
-        expect(t[CSC::IS_ABOUT]).to match_array external_attrs[t['@id']]
+        expect(t[CSC::IS_ABOUT_IRI]).to match_array external_attrs[t['@id']]
       end
     end
 
