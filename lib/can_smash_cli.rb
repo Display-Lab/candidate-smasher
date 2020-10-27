@@ -2,6 +2,7 @@ require "thor"
 require "pry"
 require_relative "input_error"
 require_relative "candidate_smasher"
+require_relative "input_resolver"
  
 class CanSmashCLI < Thor
   class_option :path, :type => :string, :banner => "path to spek file."
@@ -15,7 +16,7 @@ class CanSmashCLI < Thor
     md_source = options[:md_source]
 
     begin
-      input = resolve_input path
+      input = InputResolver.resolve path
       content = input.read
     rescue InputError => myex
       STDERR.puts(myex)
@@ -33,16 +34,6 @@ class CanSmashCLI < Thor
   end
 
   private
-
-  def resolve_input(path)
-    if(path.nil?)
-      input_method = $stdin
-    elsif(File.exists?(path) && File.readable?(path))
-      input_method = File.open(path, mode="r") 
-    else
-      raise InputError.new("Bad input path")
-    end
-  end
 
   def self.exit_on_failure?
     true
